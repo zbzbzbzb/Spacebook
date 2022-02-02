@@ -8,7 +8,7 @@ import CameraScreen from './Camera.js' ;
 
 const Tab = createBottomTabNavigator();
 
-export default function HomeScreen() {
+export default function HomeScreen() {console.log("Home");
   return (
         <Tab.Navigator >
             <Tab.Screen name="Feed" component={FeedScreen} />

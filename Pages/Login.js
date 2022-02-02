@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 
 class LoginScreen extends Component{
     constructor(props){
@@ -20,6 +19,7 @@ Save = () => {
     //get data out of state
     //send to server
     console.log(this.state);
+    const { signIn } = React.useContext(AuthContext);
 
     //after request has been sent
    // await AsyncStorage.setItem('@id', jsonValue)
@@ -36,10 +36,9 @@ SignUp = (value) =>{
 }
 
 Register = (value) =>{
-    
 }
 
-render(){
+render(){console.log("login");
     return(
         <View>
             <Button
