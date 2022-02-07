@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import React, {useState} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //https://www.npmjs.com/package/react-native-vector-icons
 //Entypo
@@ -15,9 +16,9 @@ import LoginScreen from './Pages/Login.js';
 import DrawerScreen from './Pages/DrawerScreen.js';
 import SignUpScreen from './Pages/SignUpScreen.js';
 
-const AuthContext = React.createContext();
-
 const Stack = createStackNavigator();
+
+var isLoggedIn = AsyncStorage.getItem('@spacebook_details');
 
 export default function App({ navigation }){console.log("App");
 const [state, dispatch] = React.useReducer(
@@ -56,16 +57,13 @@ React.useEffect(() => {
     let userToken;
 
     try {
-      // Restore token stored in `SecureStore` or any other encrypted storage
-      // userToken = await SecureStore.getItemAsync('userToken');
+      // Get Token
+      userToken = await SecureStore.getItemAsync('userToken');
     } catch (e) {
       // Restoring token failed
     }
 
-    // After restoring token, we may need to validate it in production apps
-
-    // This will switch to the App screen or Auth screen and this loading
-    // screen will be unmounted and thrown away.
+    //Go to Drawer
     dispatch({ type: 'RESTORE_TOKEN', token: userToken });
   };
 
@@ -75,21 +73,18 @@ React.useEffect(() => {
 const authContext = React.useMemo(
   () => ({
     signIn: async (data) => {
-      // In a production app, we need to send some data (usually username, password) to server and get a token
-      // We will also need to handle errors if sign in failed
-      // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
-      // In the example, we'll use a dummy token
+      //Send request to server to sign in
+      //get and save token
 
       dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
     },
     signOut: () => dispatch({ type: 'SIGN_OUT' }),
     signUp: async (data) => {
-      // In a production app, we need to send user data to server and get a token
-      // We will also need to handle errors if sign up failed
-      // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
-      // In the example, we'll use a dummy token
+      //Send request to server to sign up
+      //No token to save this should just take us back to sign in
+      //or maybe we auto sign em in
 
-      dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+      dispatch({ type: 'SIGN_UP', token: 'dummy-auth-token' });
     },
   }),
   []

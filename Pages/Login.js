@@ -1,23 +1,49 @@
 import React, {Component} from 'react';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const storeData = async (value) => {
+    try {
+      const jsonValue = JSON.stringify(value)
+      await AsyncStorage.setItem('@spacebook_details', jsonValue)
+    } catch (e) {
+        console.error(error);
+    }
+}
 
 class LoginScreen extends Component{
     constructor(props){
         super(props);
 
         this.state = {
-            first_name : "",
-            second_name : "",
             email : "",
             password : "",
-            type : ""
-        }
+        };
     }
 
 
 Save = () => {
-    //get data out of state
-    //send to server
+
+    fetch('http://localhost:3333/api/1.0.0/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type':'application/json'
+        },
+        body: JSON.stringify({
+            email:this.state.email,
+            password:this.state.password
+        })
+    })
+    .then((response) => response.json())
+    .then((json)=> {
+        console.log(json);
+        storeData(json);
+        this.props.navigation.navigate("Feed");
+    })
+    .catch((error) => {
+        console.log(error);
+    })
+
     console.log(this.state);
     const { signIn } = React.useContext(AuthContext);
 
@@ -26,52 +52,24 @@ Save = () => {
     //await AsyncStorage.setItem('@token', jsonValue)
 }
 
-//Might want some validation before setState()
-handleEmail = (value) => {
-    this.setState({"email":value})
-}
 
-SignUp = (value) =>{
-    
-}
-
-Register = (value) =>{
-}
 
 render(){console.log("login");
     return(
         <View>
-            <Button
-                title="Sign Up"
-                onPress={this.SignUp}
-                />
-                <Button
-                title="Register"
-                onPress={this.Register}
-                />
-
             <TextInput
-                id="first_name"
-                onChangeText={(value)=>this.setState({"first_name":value})}
-                value={this.state.first_name}
-                />
-                            <TextInput
-                onChangeText={(value)=>this.setState({"second_name":value})}
-                value={this.state.second_name}
-                />
-                            <TextInput
-                onChangeText={(value)=>this.setState({"email":value})}
-                value={this.handleEmail}
-                />
-                            <TextInput
+                onChangeText={(value)=>handleEmail(value)}
+                value={this.state.email}
+            />
+            <TextInput
                 onChangeText={(value)=>this.setState({"password":value})}
                 value={this.state.password}
-                />
+            />
 
-                <Button
-                title="Save"
+            <Button
+                title="Log In"
                 onPress={this.Save}
-                />
+            />
         </View>
     )
 }
