@@ -9,7 +9,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //https://www.npmjs.com/package/react-native-vector-icons
 //Entypo
 
-
 //Import my own files
 import LoginScreen from './Pages/Login.js';
 import DrawerScreen from './Pages/DrawerScreen.js';
@@ -43,8 +42,9 @@ const styles = StyleSheet.create({
 });
 
 /*
+npm install @react-navigation/material-top-tabs react-native-tab-view
 
-
+npm install react-native-pager-view
 */
 /*
 zfbobat@gmail.co.uk
