@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 //Import my own files
 import FeedScreen from './Feed.js';
-import CameraScreen from './Camera.js';
+import AddPostScreen from './AddPost.js';
 import FriendScreen from './Friends.js';
 
 const Tab = createBottomTabNavigator();
@@ -19,7 +19,7 @@ export default function HomeScreen() {
     >
       <Tab.Screen name="Feed" component={FeedScreen} />
       <Tab.Screen name="Friends" component={FriendScreen} />
-      <Tab.Screen name='Camera' component={CameraScreen} />
+      <Tab.Screen name='Post' component={AddPostScreen} />
     </Tab.Navigator>
   );
 
