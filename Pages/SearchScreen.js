@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { StyleSheet, Text, View, Button, ActivityIndicator, FlatList, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SelectDropdown from 'react-native-select-dropdown'
@@ -72,11 +72,11 @@ class SearchScreen extends Component {
             title="Search"
             onPress={this.getSearchData}
           />
-          
+        <Fragment>
         <FlatList
           data={this.state.searchData}
+          extraData={this.state}
           await renderItem=  {({ item }) =>
-            <TouchableOpacity>
               <View>
                 <View>
                   <Text>{item.user_givenname} {item.user_familyname}</Text>
@@ -85,10 +85,10 @@ class SearchScreen extends Component {
                   <Text>Add Friend</Text>
                 </View>
               </View>
-            </TouchableOpacity>
           }
           keyExtractor={item => item.user_id}
         />
+        </Fragment>
       </View>
 
 
