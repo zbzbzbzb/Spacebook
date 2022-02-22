@@ -19,7 +19,7 @@ class FRScreen extends Component {
   getFriendRequestsData = async () => {
     let jsonValue = await AsyncStorage.getItem('@spacebook_details');console.log(jsonValue);
     let user_data = JSON.parse(jsonValue);console.log(user_data);
-    return fetch("http://localhost:3333/api/1.0.0/friendrequests",{
+    return fetch(global.srv_url + "/friendrequests",{
       method: 'get',
       headers: {
         'Content-Type': 'application/json',

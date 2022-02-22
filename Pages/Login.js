@@ -24,7 +24,7 @@ class LoginScreen extends Component {
 
     Save = () => {
 
-        fetch('http://localhost:3333/api/1.0.0/login', {
+        fetch(global.srv_url + '/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

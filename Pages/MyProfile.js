@@ -29,7 +29,7 @@ class MyProfileScreen extends Component {
     getPhotoData = async () => {
         let jsonValue = await AsyncStorage.getItem('@spacebook_details'); console.log(jsonValue);
         let user_data = JSON.parse(jsonValue); console.log(user_data);
-        fetch("http://localhost:3333/api/1.0.0/user/" + user_data['id'] + "/photo", {
+        fetch(global.srv_url + "/user/" + user_data['id'] + "/photo", {
             method: 'GET',
             headers: {
                 'X-Authorization': user_data['token']
@@ -53,7 +53,7 @@ class MyProfileScreen extends Component {
     getProfileData = async () => {
         let jsonValue = await AsyncStorage.getItem('@spacebook_details'); console.log(jsonValue);
         let user_data = JSON.parse(jsonValue); console.log(user_data);
-        return fetch("http://localhost:3333/api/1.0.0/user/" + user_data['id'], {
+        return fetch(global.srv_url + "/user/" + user_data['id'], {
             method: 'get',
             headers: {
                 'Content-Type': 'application/json',

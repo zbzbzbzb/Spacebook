@@ -23,7 +23,7 @@ class SearchScreen extends Component {
   getSearchData = async () => {
     let jsonValue = await AsyncStorage.getItem('@spacebook_details'); console.log(jsonValue);
     let user_data = JSON.parse(jsonValue);
-    var url = "http://localhost:3333/api/1.0.0/search?q=" + this.state.q 
+    var url = global.srv_url + "/search?q=" + this.state.q 
               + "&search_in=" + this.state.search_in 
               + "&limit=" + this.state.limit
               + "&offset=" + this.state.offset;

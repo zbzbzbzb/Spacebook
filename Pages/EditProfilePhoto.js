@@ -29,7 +29,7 @@ backToMyProfile = () => {
       let res = await fetch(data.base64);
       let blob = await res.blob();
 
-      return fetch("http://localhost:3333/api/1.0.0/user/" + user_data["id"] + "/photo", {
+      return fetch(global.srv_url + "/user/" + user_data["id"] + "/photo", {
           method: "POST",
           headers: {
               "Content-Type": "image/png",

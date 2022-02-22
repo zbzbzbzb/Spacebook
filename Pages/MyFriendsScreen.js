@@ -19,7 +19,7 @@ class MyFriendsScreen extends Component {
   getMyFriendsData = async () => {
     let jsonValue = await AsyncStorage.getItem('@spacebook_details');console.log(jsonValue);
     let user_data = JSON.parse(jsonValue);console.log(user_data);
-    return fetch("http://localhost:3333/api/1.0.0/user/" + user_data['id'] + "/friends",{
+    return fetch(global.srv_url + "/user/" + user_data['id'] + "/friends",{
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
