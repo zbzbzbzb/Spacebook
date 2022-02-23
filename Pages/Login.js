@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SpacebookInput } from '../Components/SpacebookInput.js';
 
 const storeData = async (value) => {
     try {
@@ -13,7 +14,16 @@ const storeData = async (value) => {
 
 class LoginScreen extends Component {
     constructor(props) {
-        super(props);
+        super(props);console.log(props);
+       // const {autoLogin, signUpEmail, signUpPassword} = route.params;
+        
+        // if(autoLogin){
+        //     this.state = {
+        //         email: signUpEmail,
+        //         password: signUpPassword,
+        //     };
+        //     this.Save;
+        // }
 
         this.state = {
             email: "zfbobat@gmail.co.uk",
@@ -21,6 +31,9 @@ class LoginScreen extends Component {
         };
     }
 
+    signUp = () => {
+        this.props.navigation.navigate("SignUp");
+    }
 
     Save = () => {
 
@@ -51,21 +64,31 @@ class LoginScreen extends Component {
     render() {
         console.log("login");
         return (
-            <View>
-                <TextInput
-                    placeholder="Enter email"
-                    onChangeText={(email) => this.setState({ "email": email })}
-                    value={this.state.email}
-                />
-                <TextInput
-                    placeholder="Enter password"
-                    onChangeText={(password) => this.setState({ "password": password })}
-                    value={this.state.password}
+            <View style={{ height: '100%', flex: 1, justifyContent: 'center' }}>
+
+                <SpacebookInput
+                    id="email"
+                    autoCorrect={false}
+                    label="Email"
+                    changeText={(value) => this.setState({ "email": value })}
+                    inputvalue={this.state.email}
                 />
 
+                <SpacebookInput
+                    id="password"
+                    autoCorrect={false}
+                    label="Password"
+                    secureTextEntry={true}
+                    changeText={(value) => this.setState({ "password": value })}
+                    inputvalue={this.state.password}
+                />
                 <Button
                     title="Log In"
                     onPress={this.Save}
+                />
+                <Button
+                    title="Sign Up"
+                    onPress={this.signUp}
                 />
             </View>
         )

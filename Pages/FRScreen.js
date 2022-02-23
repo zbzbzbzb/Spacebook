@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button, ActivityIndicator, FlatList } from 'react-native';
+import React, { Component, Fragment } from 'react';
+import { StyleSheet, Text, View, Button, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class FRScreen extends Component {
@@ -53,6 +53,7 @@ class FRScreen extends Component {
     } else {
       return (
         <View>
+          <Fragment>
           <FlatList
             data={this.state.friendRequestData}
             renderItem={({ item }) =>
@@ -68,8 +69,9 @@ class FRScreen extends Component {
                 </View>
               </TouchableOpacity>
             }
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.user_id}
           />
+          </Fragment>
         </View>
 
 

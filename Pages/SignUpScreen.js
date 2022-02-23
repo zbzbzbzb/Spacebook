@@ -1,62 +1,103 @@
-import * as React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { SpacebookInput } from '../Components/SpacebookInput.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Save as Login} from './Login.js';
 
-class SignUpScreen extends Component{
-  constructor(props){
-      super(props);
 
-      this.state = {
-          first_name : "",
-          second_name : "",
-          email : "",
-          password : "",
-          type : ""
-      }
+class SignUpScreen extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      first_name: "",
+      second_name: "",
+      email: "",
+      password: "",
+    }
   }
 
 
-Save = () => {
-  //get data out of state
-  //send to server
-  console.log(this.state);
-  const { signIn } = React.useContext(AuthContext);
+  Save = async () => {
+    let jsonValue = await AsyncStorage.getItem('@spacebook_details');
+    let user_data = JSON.parse(jsonValue);
 
-  //after request has been sent
- // await AsyncStorage.setItem('@id', jsonValue)
-  //await AsyncStorage.setItem('@token', jsonValue)
-}
+      return fetch(global.srv_url + "/user" , {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            
+            "first_name": this.state.first_name,
+            "last_name": this.state.second_name,
+            "email": this.state.email,
+            "password": this.state.password
+          })
+      })
+      .then((response) => {
+        if(response.status == 400){
+          console.log("User was not created - Email address errors");
+        }else{
+          console.log("User Created", response);
+          this.props.navigation.navigate("Login", {
+            autoLogin: true,
+            signUpEmail: this.state.email,
+            signUpPassword: this.state.password
+          });
+        }
 
-//Might want some validation before setState()
-handleEmail = (value) => {
-  this.setState({"email":value})
-}
+      })
+      .catch((err) => {
+          console.log(err);
+      })
+  }
 
-  render(){console.log("signup");
+  //Might want some validation before setState()
+  handleEmail = (value) => {
+    this.setState({ "email": value })
+  }
+
+  render() {
+    console.log("signup");
     return (
       <View>
-      <TextInput
+        <SpacebookInput
           id="first_name"
-          onChangeText={(value)=>this.setState({"first_name":value})}
-          value={this.state.first_name}
-          />
-                      <TextInput
-          onChangeText={(value)=>handleEmail(value)}
-          value={this.state.second_name}
-          />
-                      <TextInput
-          onChangeText={(value)=>this.setState({"email":value})}
-          value={this.state.email}
-          />
-                      <TextInput
-          onChangeText={(value)=>this.setState({"password":value})}
-          value={this.state.password}
-          />
+          autoCorrect={false}
+          label="First Name"
+          changeText={(value) => this.setState({ "first_name": value })}
+          inputvalue={this.state.first_name}
+        />
 
-          <Button
+        <SpacebookInput
+          id="second_name"
+          autoCorrect={false}
+          label="Second Name"
+          changeText={(value) => this.setState({ "second_name": value })}
+          inputvalue={this.state.second_name}
+        />
+        <SpacebookInput
+          id="email"
+          autoCorrect={false}
+          label="Email"
+          changeText={(value) => this.setState({ "email": value })}
+          inputvalue={this.state.email}
+        />
+        <SpacebookInput
+          id="password"
+          autoCorrect={false}
+          label="Password"
+          secureTextEntry = {true}
+          changeText={(value) => this.setState({ "password": value })}
+          inputvalue={this.state.password}
+        />
+
+        <Button
           title="Save"
           onPress={this.Save}
-          />
-  </View>
+        />
+      </View>
     );
   }
 }
