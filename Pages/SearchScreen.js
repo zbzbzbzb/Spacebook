@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { StyleSheet, Text, View, Button, ActivityIndicator, FlatList, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button, ActivityIndicator, FlatList, TextInput, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SelectDropdown from 'react-native-select-dropdown';
 import { SpacebookInput } from '../Components/SpacebookInput.js';
@@ -32,14 +32,40 @@ class SearchScreen extends Component {
       }
     })
       .then((response) => {
-        console.log("Friend Request Sent", response);
-        //Try call the login function
-        //Login();
+        //console.log("Friend Request Sent", response);
+        if(response.status == 403){
+          //Alert.alert() doesnt work on web so make a function that either does js alert() or Alert.alert() based on 
+          //https://reactnative.dev/docs/platform-specific-code
+          Alert.alert("User already added as a friend",
+          "Please choose someone else",
+          [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel"
+            },
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ]
+        );
+        }else{
+          Alert.alert("Friend Request Sent");
+        }
+
 
       })
       .catch((err) => {
         if(err.status == 403){
-          alert("User already added as a friend");
+          Alert.alert("User already added as a friend",
+          "My Alert Msg",
+          [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel"
+            },
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ]
+        );
         }else{
           console.log(err);
         }
@@ -99,10 +125,7 @@ class SearchScreen extends Component {
 
         <Button
           title="Search"
-          onPress={function(){
-            this.getSearchData();
-            return false;
-          }}
+          onPress={() => this.getSearchData()}
         />
         <Fragment>
           <FlatList
