@@ -2,52 +2,46 @@ import React, { Component, Fragment } from 'react';
 import { StyleSheet, Text, View, Button, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class FRScreen extends Component {
+class FriendsProfile extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       isLoading: true,
-      friendRequestData: [],
+      allPostsData: [],
+      friend_id: this.props.route.params.friend_id,
     };
   }
 
   componentDidMount() {
-    this.getFriendRequestsData();
+    this.getAllPosts();
   }
 
-  handleFR = async (friendId, methodType) => {
+  likePost = async (post_id) => {
     let jsonValue = await AsyncStorage.getItem('@spacebook_details'); console.log(jsonValue);
     let user_data = JSON.parse(jsonValue);
 
-    return fetch(global.srv_url + "/friendrequests/" + friendId , {
-      method: methodType,
+    return fetch(global.srv_url + "/user/" + this.state.friend_id + "/post/" + post_id + "/like", {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         'X-Authorization': user_data['token']
       }
     })
       .then((response) => {
-        if(methodType == "POST"){
-          console.log("Friend Request Accepted");
-        }else if(methodType = "DELETE"){
-          console.log("Friend Request Rejected");
-        }
-
-      }).then(() => {
-        this.getFriendRequestsData();
+        console.log("Post Liked");
+        //Do something
       })
       .catch((err) => {
-          console.log(err);
-        
+        console.log(err);
       })
 
   }
 
-  getFriendRequestsData = async () => {
+  getAllPosts = async () => {
     let jsonValue = await AsyncStorage.getItem('@spacebook_details');console.log(jsonValue);
     let user_data = JSON.parse(jsonValue);console.log(user_data);
-    return fetch(global.srv_url + "/friendrequests",{
+    return fetch(global.srv_url + "/user/" + this.state.friend_id + "/post",{
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
@@ -59,7 +53,7 @@ class FRScreen extends Component {
         console.log(responseJson);
         this.setState({
           isLoading: false,
-          friendRequestData: responseJson
+          allPostsData: responseJson
         })
       })
       .catch((error) => {
@@ -67,8 +61,14 @@ class FRScreen extends Component {
       });
   }
 
+  format_date = (date) => {
+    var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    var dateString = new Date(date);
+    return dateString.toLocaleDateString("en-US", options);
+  }
+
   render() {
-    console.log('Friend requests');
+    console.log('All Posts');
     if (this.state.isLoading) {
       return (
         <View>
@@ -78,32 +78,33 @@ class FRScreen extends Component {
           />
         </View>
       );
-    } else {
+    } else {console.log(this.state.allPostsData);
       return (
         <View>
           <Fragment>
           <FlatList
-            data={this.state.friendRequestData}
+            data={this.state.allPostsData}
             renderItem={({ item }) =>
               <TouchableOpacity>
                 <View >
                   <View >
-                    <Text>{item.first_name} {item.last_name}</Text>
+                    <Text>{item.text}</Text>
+                    <Text>Date : {this.format_date(item.timestamp)}</Text>
                   </View>
                   <View>
                     <Button
-                      title="Accept"
-                      onPress={() => this.handleFR(item.user_id, "POST")}
+                      title="Like"
+                      onPress={() => this.likePost(item.post_id)}
                       />
                     <Button 
-                        title="Reject"
-                        onPress={() => this.handleFR(item.user_id, "DELETE")}
+                        title="View"
+                        //onPress={() => this.handleFR(item.user_id, "DELETE")}
                         />
                   </View>
                 </View>
               </TouchableOpacity>
             }
-            keyExtractor={item => item.user_id}
+            keyExtractor={item => item.post_id}
           />
           </Fragment>
         </View>
@@ -113,21 +114,6 @@ class FRScreen extends Component {
     }
   }
 }
-export default FRScreen;
+export default FriendsProfile;
 
 
-/*  FR
-
-GET
-/friendrequests
-Get list of outstanding friends requests
-
-POST
-/friendrequests/{user_id}
-Accept a friend request
-
-DELETE
-/friendrequests/{user_id}
-Reject a friend request
-
-*/

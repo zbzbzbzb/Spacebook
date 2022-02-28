@@ -28,6 +28,8 @@ class LoginScreen extends Component {
         this.state = {
             email: "zfbobat@gmail.co.uk",
             password: "zahir123",
+            //email: "don@ali.com",
+            //password: "donali",
         };
     }
 
@@ -51,7 +53,7 @@ class LoginScreen extends Component {
             .then((json) => {
                 console.log(json);
                 storeData(json);
-                this.props.navigation.navigate("Drawer");
+                this.props.navigation.navigate("Homescreen");
             })
             .catch((error) => {
                 console.log(error);

@@ -1,10 +1,16 @@
 import React, {Component} from 'react';
 import {TextInput, View, Text} from 'react-native';
 
-const SpacebookInput = ({ id, label , inputvalue,styleLabel, changeText, placeholder, secureTextEntry}) => {
+
+const SpacebookInput = ({ id, label , inputvalue,styleLabel, changeText, placeholder, secureTextEntry, multiline, numberOfLines}) => {
     const {inputStyle, labelStyle, containerStyle} = styles;
     if(secureTextEntry == undefined){
         secureTextEntry = false;
+    }
+
+    if(numberOfLines == undefined && multiline == undefined){
+        numberOfLines = 1;
+        multiline = false;
     }
     return(
         <View style = {containerStyle}>
@@ -17,6 +23,8 @@ const SpacebookInput = ({ id, label , inputvalue,styleLabel, changeText, placeho
                value={inputvalue}
                secureTextEntry={secureTextEntry}
                onChangeText = {changeText}
+               multiline = {multiline}
+               numberOfLines = {numberOfLines}
             />
         </View>
     );

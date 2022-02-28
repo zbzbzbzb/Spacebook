@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button, ActivityIndicator, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Button, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class MyFriendsScreen extends Component {
@@ -16,10 +16,16 @@ class MyFriendsScreen extends Component {
     this.getMyFriendsData();
   }
 
+  viewFriend = (id) => {
+    this.props.navigation.navigate("FriendsProfile", {
+      friend_id: id
+    });
+  }
+
   getMyFriendsData = async () => {
-    let jsonValue = await AsyncStorage.getItem('@spacebook_details');console.log(jsonValue);
-    let user_data = JSON.parse(jsonValue);console.log(user_data);
-    return fetch(global.srv_url + "/user/" + user_data['id'] + "/friends",{
+    let jsonValue = await AsyncStorage.getItem('@spacebook_details'); console.log(jsonValue);
+    let user_data = JSON.parse(jsonValue); console.log(user_data);
+    return fetch(global.srv_url + "/user/" + user_data['id'] + "/friends", {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
@@ -59,15 +65,18 @@ class MyFriendsScreen extends Component {
               <TouchableOpacity>
                 <View >
                   <View >
-                    <Text>{item.first_name} {item.last_name}</Text>
+                    <Text>{item.user_givenname} {item.user_familyname}</Text>
                   </View>
                   <View>
-                    <Text >Post</Text>
+                    <Button
+                      title="View"
+                      onPress={() => this.viewFriend(item.user_id)}
+                    />                  
                   </View>
                 </View>
               </TouchableOpacity>
             }
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.user_id}
           />
         </View>
 
