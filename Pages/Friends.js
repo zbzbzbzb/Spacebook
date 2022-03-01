@@ -12,7 +12,7 @@ const Tab = createMaterialTopTabNavigator();
 export default function FriendScreen() {
     return (
       <Tab.Navigator>
-        <Tab.Screen name="ShowFriendsNav" component={ShowFriendsNav} />
+        <Tab.Screen name="Friends" component={ShowFriendsNav} />
         <Tab.Screen name="Friend Requests" component={FRScreen} />
         <Tab.Screen name="Search" component={SearchScreen} />
     </Tab.Navigator>    

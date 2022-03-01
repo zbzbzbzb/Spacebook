@@ -5,7 +5,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //Import my own files
-//import FeedScreen from './FriendsProfile.js';
 import AddPostScreen from './AddPost.js';
 import FriendScreen from './Friends.js';
 import ProfileScreen from './Profile.js';
@@ -56,7 +55,6 @@ class HomeScreen extends Component {
             headerShown: false
           }}
         >
-          {/* <Tab.Screen name="Feed" component={FeedScreen} /> */}
           <Tab.Screen name="Friends" component={FriendScreen} />
           <Tab.Screen name='Post' component={AddPostScreen} />
           <Tab.Screen name='Profile' component={ProfileScreen} />

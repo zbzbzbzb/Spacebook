@@ -32,8 +32,9 @@ const SpacebookInput = ({ id, label , inputvalue,styleLabel, changeText, placeho
 
 const styles ={
     inputStyle:{
-        color: '#333',
+        color: '#f2f2f2',
         fontSize: 16,
+        color:'black',
         lineHeight: 23,  
         borderBottomColor: '#333',
         borderBottomWidth: 0.5,

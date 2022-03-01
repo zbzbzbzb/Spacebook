@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Button, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SpacebookInput } from '../Components/SpacebookInput';
+import {InnerStyledView} from '../style.js';
 
 class AddPostScreen extends Component {
   constructor(props) {
@@ -37,7 +38,7 @@ class AddPostScreen extends Component {
   render() {
     console.log('AddPost');
       return (
-        <View>
+        <InnerStyledView>
         <SpacebookInput
           autoCorrect={false}
           label="Write your Post"
@@ -53,7 +54,7 @@ class AddPostScreen extends Component {
           onPress={() => this.addPost()}
         />
 
-      </View>
+      </InnerStyledView>
       );
     
   }

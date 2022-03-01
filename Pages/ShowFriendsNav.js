@@ -12,7 +12,7 @@ export default function ShowFriendsNav() {
     return (
       <Stack.Navigator>
         <Stack.Screen name="My Friends" component={MyFriendsScreen} />
-        <Stack.Screen name="FriendsProfile" component={FriendsProfile} />
+        <Stack.Screen name="Friends Profile" component={FriendsProfile} />
     </Stack.Navigator>    
     );
 }

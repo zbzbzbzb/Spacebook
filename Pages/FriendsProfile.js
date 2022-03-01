@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { StyleSheet, Text, View, Button, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {InnerStyledView} from '../style.js';
 
 class FriendsProfile extends Component {
   constructor(props) {
@@ -86,7 +87,7 @@ class FriendsProfile extends Component {
             data={this.state.allPostsData}
             renderItem={({ item }) =>
               <TouchableOpacity>
-                <View >
+                <InnerStyledView >
                   <View >
                     <Text>{item.text}</Text>
                     <Text>Date : {this.format_date(item.timestamp)}</Text>
@@ -101,7 +102,7 @@ class FriendsProfile extends Component {
                         //onPress={() => this.handleFR(item.user_id, "DELETE")}
                         />
                   </View>
-                </View>
+                </InnerStyledView>
               </TouchableOpacity>
             }
             keyExtractor={item => item.post_id}

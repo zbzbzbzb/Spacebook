@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Button, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {InnerStyledView} from '../style.js';
 
 class MyFriendsScreen extends Component {
   constructor(props) {
@@ -17,7 +18,7 @@ class MyFriendsScreen extends Component {
   }
 
   viewFriend = (id) => {
-    this.props.navigation.navigate("FriendsProfile", {
+    this.props.navigation.navigate("Friends Profile", {
       friend_id: id
     });
   }
@@ -63,7 +64,7 @@ class MyFriendsScreen extends Component {
             data={this.state.myFriendsData}
             renderItem={({ item }) =>
               <TouchableOpacity>
-                <View >
+                <InnerStyledView>
                   <View >
                     <Text>{item.user_givenname} {item.user_familyname}</Text>
                   </View>
@@ -73,7 +74,7 @@ class MyFriendsScreen extends Component {
                       onPress={() => this.viewFriend(item.user_id)}
                     />                  
                   </View>
-                </View>
+                </InnerStyledView>
               </TouchableOpacity>
             }
             keyExtractor={item => item.user_id}

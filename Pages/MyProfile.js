@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Button, ActivityIndicator, FlatList, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {InnerStyledView} from '../style.js';
 
 class MyProfileScreen extends Component {
     constructor(props) {
@@ -96,10 +97,12 @@ class MyProfileScreen extends Component {
                             borderWidth: 5
                         }}
                     />
-                    <Text>{this.state.profileData.email}</Text>
-                    <Text>{this.state.profileData.first_name}</Text>
-                    <Text>{this.state.profileData.last_name}</Text>
-                    <Text>{this.state.profileData.friend_count}</Text>
+                    <InnerStyledView>
+                        <Text>{this.state.profileData.email}</Text>
+                        <Text>{this.state.profileData.first_name}</Text>
+                        <Text>{this.state.profileData.last_name}</Text>
+                        <Text>{this.state.profileData.friend_count}</Text>
+                    </InnerStyledView>
                     <View style={{ position: 'absolute', bottom: 0, width: '100vw' }}>
 
                         <Button onPress={this.editProfile} title="Edit Profile" />
