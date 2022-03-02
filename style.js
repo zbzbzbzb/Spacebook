@@ -14,6 +14,27 @@ export const SplitView = styled.View`
     margin-bottom:5px;
 `;
 
+export const SplitViewBetween = styled.View`
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+    margin-bottom:5px;
+`;
+
+export const SplitViewAround = styled.View`
+    display:flex;
+    flex-direction:row;
+    justify-content:space-around;
+    margin-bottom:5px;
+`;
+
+export const SplitViewRight = styled.View`
+    display:flex;
+    flex-direction:row;
+    justify-content:right;
+    margin-bottom:5px;
+`;
+
 export const NameText = styled.Text`
     font-weight:bold;
     font-size:20px;

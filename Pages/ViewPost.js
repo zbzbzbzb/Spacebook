@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react';
-import { Text, View, Button, ActivityIndicator, FlatList, TouchableOpacity, Image } from 'react-native';
+import { Text, View, Button, ActivityIndicator, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { InnerStyledView, SplitView, NameText, SubText, OneLineText } from '../style.js';
+import { InnerStyledView, SplitView, NameText, SubText, OneLineText, SplitViewAround, SplitViewBetween } from '../style.js';
 import { ScrollView } from 'react-native-gesture-handler';
+import { Post } from '../Components/Post.js';
 
 class ViewPost extends Component {
   constructor(props) {
@@ -43,12 +44,6 @@ class ViewPost extends Component {
       });
   }
 
-  format_date = (date) => {
-    var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    var dateString = new Date(date);
-    return dateString.toLocaleDateString("en-US", options);
-  }
-
   render() {
     console.log('View Post');
     if (this.state.isLoading) {
@@ -61,32 +56,24 @@ class ViewPost extends Component {
         </View>
       );
     } else {
-      console.log(this.state.postData);
       return (
-        <View>
-          <Fragment>
-            <FlatList
-              data={this.state.postData}
-              renderItem={({ item }) =>
-                <TouchableOpacity>
-                  <InnerStyledView>
-                    <View >
-                      <Text>{item.text}</Text>
-                      <Text>Date : {this.format_date(item.timestamp)}</Text>
-                    </View>
-                    <View>
-                      <Button
-                        title="Like"
-                        onPress={() => this.likePost(item.post_id)}
-                      />
-                    </View>
-                  </InnerStyledView>
-                </TouchableOpacity>
-              }
-              keyExtractor={item => item.post_id}
+        <ScrollView>
+          <TouchableOpacity>
+
+
+            <Post
+              post_id={this.state.postData.post_id}
+              text={this.state.postData.text}
+              timestamp={this.state.postData.timestamp}
+              numLikes={this.state.postData.numLikes}
+              friend_id={this.state.friend_id}
             />
-          </Fragment>
-        </View>
+
+            <InnerStyledView>
+              <SubText>Post by {this.state.postData.author.first_name} {this.state.postData.author.last_name} </SubText>
+            </InnerStyledView>
+          </TouchableOpacity>
+        </ScrollView>
 
 
       );

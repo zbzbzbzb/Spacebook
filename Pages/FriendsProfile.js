@@ -3,6 +3,7 @@ import { Text, View, Button, ActivityIndicator, FlatList, TouchableOpacity, Imag
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { InnerStyledView, SplitView, NameText, SubText, OneLineText } from '../style.js';
 import { ScrollView } from 'react-native-gesture-handler';
+import { Post } from '../Components/Post.js';
 
 class FriendsProfile extends Component {
   constructor(props) {
@@ -21,34 +22,6 @@ class FriendsProfile extends Component {
     this.getProfileData();
     this.getPhotoData();
     this.getAllPosts();
-  }
-
-  viewPost = (post_id) =>{
-    this.props.navigation.navigate("View Post", {
-      post_id: post_id,
-      friend_id: this.state.friend_id,
-    });
-  }
-
-  likePost = async (post_id) => {
-    let jsonValue = await AsyncStorage.getItem('@spacebook_details');
-    let user_data = JSON.parse(jsonValue);
-
-    return fetch(global.srv_url + "/user/" + this.state.friend_id + "/post/" + post_id + "/like", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        'X-Authorization': user_data['token']
-      }
-    })
-      .then((response) => {
-        console.log("Post Liked");
-        //Do something
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-
   }
 
   getAllPosts = async () => {
@@ -119,10 +92,11 @@ class FriendsProfile extends Component {
       });
   }
 
-  format_date = (date) => {
-    var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    var dateString = new Date(date);
-    return dateString.toLocaleDateString("en-US", options);
+  viewPost = (post_id, friend_id) => {
+    this.props.navigation.navigate("View Post", {
+      post_id: post_id,
+      friend_id: friend_id,
+    });
   }
 
   render() {
@@ -139,7 +113,7 @@ class FriendsProfile extends Component {
     } else {
       console.log(this.state.allPostsData);
       return (
-        <View>
+        <ScrollView>
           <InnerStyledView>
             <SplitView>
               <Image
@@ -152,7 +126,7 @@ class FriendsProfile extends Component {
                   borderWidth: 2
                 }}
               />
-              <View style={{paddingLeft:'7px'}}>
+              <View style={{ paddingLeft: '7px' }}>
                 <NameText>{this.state.profileData.first_name} {this.state.profileData.last_name}</NameText>
                 <OneLineText><SubText>My Email</SubText><Text> {this.state.profileData.email}</Text></OneLineText>
                 <OneLineText><SubText>Friends</SubText><Text> {this.state.profileData.friend_count}</Text></OneLineText>
@@ -160,34 +134,25 @@ class FriendsProfile extends Component {
             </SplitView>
           </InnerStyledView>
           <Fragment>
-            <ScrollView>
             <FlatList
               data={this.state.allPostsData}
               renderItem={({ item }) =>
                 <TouchableOpacity>
-                  <InnerStyledView>
-                    <View >
-                      <Text>{item.text}</Text>
-                      <Text>Date : {this.format_date(item.timestamp)}</Text>
-                    </View>
-                    <View>
-                    <Button
-                        title="Like"
-                        onPress={() => this.likePost(item.post_id)}
-                      />
-                      <Button
-                        title="View"
-                        onPress={() => this.viewPost(item.post_id)}
-                      />
-                    </View>
-                  </InnerStyledView>
+                  <Post
+                    post_id={item.post_id}
+                    text={item.text}
+                    timestamp={item.timestamp}
+                    numLikes={item.numLikes}
+                    friend_id={this.state.friend_id}
+                    view={() => this.viewPost(item.post_id, this.state.friend_id)}
+                  />
                 </TouchableOpacity>
               }
               keyExtractor={item => item.post_id}
             />
-            </ScrollView>
+
           </Fragment>
-        </View>
+        </ScrollView>
 
 
       );

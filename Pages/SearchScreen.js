@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, Button, ActivityIndicator, FlatList, TextInput,
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SelectDropdown from 'react-native-select-dropdown';
 import { SpacebookInput } from '../Components/SpacebookInput.js';
+import { InnerStyledView, SplitView, NameText, SubText, OneLineText, SplitViewAround, SplitViewBetween } from '../style.js';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 const search_in_drop = ["Friends", "All"];
@@ -80,7 +82,7 @@ class SearchScreen extends Component {
   render() {
     console.log('Search');
     return (
-      <View>
+      <ScrollView>
 
         <SpacebookInput
           autoCorrect={false}
@@ -109,7 +111,7 @@ class SearchScreen extends Component {
             data={this.state.searchData}
             extraData={this.state}
             await renderItem={({ item }) =>
-              <View>
+              <InnerStyledView>
                 <View>
                   <Text>{item.user_givenname} {item.user_familyname}</Text>
                 </View>
@@ -117,12 +119,12 @@ class SearchScreen extends Component {
                   title="Add Friend"
                   onPress={() => this.addFriend(item.user_id)}
                 />
-              </View>
+              </InnerStyledView>
             }
             keyExtractor={item => item.user_id}
           />
         </Fragment>
-      </View>
+      </ScrollView>
 
     );
 
