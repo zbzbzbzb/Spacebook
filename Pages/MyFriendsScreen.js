@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
+import { Text, View, Button, ActivityIndicator, FlatList, TouchableOpacity, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {InnerStyledView} from '../style.js';
+import { ScrollView } from 'react-native-gesture-handler';
+import { InnerStyledView, SplitView, NameText, SubText, OneLineText } from '../style.js';
 
 class MyFriendsScreen extends Component {
   constructor(props) {
@@ -35,7 +36,10 @@ class MyFriendsScreen extends Component {
     })
       .then((response) => response.json())
       .then((responseJson) => {
-        console.log(responseJson);
+        responseJson.forEach((element, index) => {
+          this.getPhoto(element.user_id, index);
+        });
+        console.table(responseJson[0].profile_photo);
         this.setState({
           isLoading: false,
           myFriendsData: responseJson
@@ -43,6 +47,27 @@ class MyFriendsScreen extends Component {
       })
       .catch((error) => {
         console.log(error);
+      });
+  }
+
+  getPhoto = async (friends_user_id, index) => {
+    let jsonValue = await AsyncStorage.getItem('@spacebook_details');
+    let user_data = JSON.parse(jsonValue);
+    fetch(global.srv_url + "/user/" + friends_user_id + "/photo", {
+      method: 'GET',
+      headers: {
+        'X-Authorization': user_data['token']
+      }
+    })
+      .then((res) => {
+        return res.blob();
+      })
+      .then((resBlob) => {
+        let data = URL.createObjectURL(resBlob);
+        myFriendsData[index]["profile_photo"] = data;
+      })
+      .catch((err) => {
+        console.log("error", err)
       });
   }
 
@@ -59,27 +84,39 @@ class MyFriendsScreen extends Component {
       );
     } else {
       return (
-        <View>
+        <ScrollView>
           <FlatList
             data={this.state.myFriendsData}
             renderItem={({ item }) =>
               <TouchableOpacity>
                 <InnerStyledView>
-                  <View >
-                    <Text>{item.user_givenname} {item.user_familyname}</Text>
-                  </View>
+                  <SplitView>
+                    <Image
+                      source={{
+                        uri: item.profile_photo,
+                      }}
+                      style={{
+                        width: 80,
+                        height: 80,
+                        borderWidth: 2
+                      }}
+                    />
+                    <View style={{paddingLeft:'7px'}}>
+                      <NameText>{item.user_givenname} {item.user_familyname}</NameText>
+                    </View>
+                  </SplitView>
                   <View>
                     <Button
                       title="View"
                       onPress={() => this.viewFriend(item.user_id)}
-                    />                  
+                    />
                   </View>
                 </InnerStyledView>
               </TouchableOpacity>
             }
             keyExtractor={item => item.user_id}
           />
-        </View>
+        </ScrollView>
 
 
       );

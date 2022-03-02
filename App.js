@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet} from 'react-native';
 import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //https://www.npmjs.com/package/react-native-vector-icons
 //Entypo
+//https://www.npmjs.com/package/react-native-awesome-alerts#installation
 
 //Import my own files
 import LoginScreen from './Pages/Login.js';

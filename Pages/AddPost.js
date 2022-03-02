@@ -29,6 +29,7 @@ class AddPostScreen extends Component {
       .then((response) => response.json())
       .then((responseJson) => {
         console.log(responseJson);
+        this.setState({text: "" }); 
       })
       .catch((error) => {
         console.log(error);
@@ -47,7 +48,6 @@ class AddPostScreen extends Component {
           multiline={true}
           numberOfLines={6}
         />
-        
         
         <Button
           title="Submit"
