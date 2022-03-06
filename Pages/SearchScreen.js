@@ -34,18 +34,18 @@ class SearchScreen extends Component {
       }
     })
       .then((response) => {
-        if(response.status == 403){
+        if (response.status == 403) {
           alert("User already added as a friend");
-        }else{
+        } else {
           console.log("Friend Request Sent");
         }
 
 
       })
       .catch((err) => {
-        if(err.status == 403){
+        if (err.status == 403) {
           alert("User already added as a friend");
-        }else{
+        } else {
           console.log(err);
         }
       })
@@ -83,29 +83,32 @@ class SearchScreen extends Component {
     console.log('Search');
     return (
       <ScrollView>
-
-        <SpacebookInput
-          autoCorrect={false}
-          label="Search for User"
-          changeText={(q) => this.setState({ "q": q })}
-          inputvalue={this.state.q}
-        />
-        <SelectDropdown
-          data={search_in_drop}
-          onSelect={(selectedItem, index) => {
-            console.log(selectedItem, index)
-          }}
-          buttonTextAfterSelection={(selectedItem, index) => {
-            this.state.search_in = selectedItem.toLowerCase();
-            return selectedItem;
-          }}
-          rowTextForSelection={(item, index) => { return item }}
-        />
-
-        <Button
-          title="Search"
-          onPress={() => this.getSearchData()}
-        />
+        <InnerStyledView>
+          <SpacebookInput
+            autoCorrect={false}
+            label="Search for User"
+            changeText={(q) => this.setState({ "q": q })}
+            inputvalue={this.state.q}
+          />
+          <SplitViewBetween>
+            <Text>Press to choose</Text>
+            <SelectDropdown
+              data={search_in_drop}
+              onSelect={(selectedItem, index) => {
+                console.log(selectedItem, index)
+              }}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                this.state.search_in = selectedItem.toLowerCase();
+                return selectedItem;
+              }}
+              rowTextForSelection={(item, index) => { return item }}
+            />
+          </SplitViewBetween>
+          <Button
+            title="Search"
+            onPress={() => this.getSearchData()}
+          />
+        </InnerStyledView>
         <Fragment>
           <FlatList
             data={this.state.searchData}

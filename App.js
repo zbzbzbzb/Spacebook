@@ -15,9 +15,9 @@ import LoginScreen from './Pages/Login.js';
 import Homescreen from './Pages/Homescreen.js';
 import SignUpScreen from './Pages/SignUpScreen.js';
 
-// global.srv_url = "http://192.168.68.134:3333/api/1.0.0";
+//global.srv_url = "http://192.168.68.134:3333/api/1.0.0";
 //global.srv_url = "http://192.168.89.232:3333/api/1.0.0";
- global.srv_url = "http://localhost:3333/api/1.0.0";
+global.srv_url = "http://localhost:3333/api/1.0.0";
 
 const Stack = createStackNavigator();
 

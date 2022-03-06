@@ -46,7 +46,7 @@ class AddPostScreen extends Component {
           changeText={(text) => this.setState({ "text": text })}
           inputvalue={this.state.text}
           multiline={true}
-          numberOfLines={6}
+          numberOfLines={17}
         />
         
         <Button

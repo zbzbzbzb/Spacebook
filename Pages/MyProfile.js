@@ -121,12 +121,19 @@ class MyProfileScreen extends Component {
             });
     }
 
-    viewPost = (post_id, friend_id) => {console.log("HHEE"+post_id+" "+friend_id);
+    viewPost = (post_id, friend_id) => {//Friend ID is actually user id
         this.props.navigation.navigate("View Post", {
             post_id: post_id,
             friend_id: friend_id,
         });
     }
+
+    updatePost = (post_id) => {
+        this.props.navigation.navigate("Edit Post", {
+            post_id: post_id
+        });
+    }
+
     render() {
         console.log('My Profile');
         if (this.state.isLoading) {
@@ -169,17 +176,18 @@ class MyProfileScreen extends Component {
                     <FlatList
                         data={this.state.allPostsData}
                         renderItem={({ item }) =>
-                            <TouchableOpacity>
-                                <Post
-                                    post_id={item.post_id}
-                                    text={item.text}
-                                    timestamp={item.timestamp}
-                                    numLikes={item.numLikes}
-                                    friend_id={this.state.profileData.user_id}
-                                    view={() => this.viewPost(item.post_id, this.state.profileData.user_id)}
-                                    updel={true}
-                                />
-                            </TouchableOpacity>
+
+                            <Post
+                                post_id={item.post_id}
+                                text={item.text}
+                                timestamp={item.timestamp}
+                                numLikes={item.numLikes}
+                                friend_id={this.state.profileData.user_id}
+                                view={() => this.viewPost(item.post_id, this.state.profileData.user_id)}
+                                updel={true}
+                                update={() => this.updatePost(item.post_id, this.state.profileData.user_id)}
+                            />
+
                         }
                         keyExtractor={item => item.post_id}
                     />

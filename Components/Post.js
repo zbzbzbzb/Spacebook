@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Button } from 'react-native';
-import { InnerStyledView, SplitView, NameText, SubText, OneLineText, SplitViewAround, SplitViewBetween } from '../style.js';
+import { InnerStyledView, SplitView, NameText, SubText, OneLineText, SplitViewAround, SplitViewBetween, AddMargin } from '../style.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const likePost = async (post_id, friend_id) => {
@@ -45,6 +45,27 @@ const unlikePost = async (post_id, friend_id) => {
 
 }
 
+const deletePost = async (post_id, friend_id) => {
+    let jsonValue = await AsyncStorage.getItem('@spacebook_details');
+    let user_data = JSON.parse(jsonValue);
+
+    return fetch(global.srv_url + "/user/" + friend_id + "/post/" + post_id, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            'X-Authorization': user_data['token']
+        }
+    })
+        .then((response) => {
+            console.log("Post Deleted");
+            //Do something
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+
+}
+
 const format_date = (date) => {
     console.log(date);
     var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -52,7 +73,8 @@ const format_date = (date) => {
     return dateString.toLocaleDateString("en-US", options);
 }
 
-const Post = ({ post_id, text, timestamp, numLikes, friend_id, view, updel }) => {
+const Post = ({ post_id, text, timestamp, numLikes, friend_id, view, updel, update }) => {
+    const { likeButtons, updelButtons } = styles;
     var viewButton;
     if (view == undefined) {
         view = false;
@@ -68,17 +90,17 @@ const Post = ({ post_id, text, timestamp, numLikes, friend_id, view, updel }) =>
     if (updel == undefined) {
         updel = false;
     } else {
-        updateButton = <Button
+        updateButton = <View style={updelButtons}><Button
             title="Update"
-            onPress={view}
-        />;
-        deleteButton = <Button
+            onPress={update}
+            
+        /></View>;
+        deleteButton = <View style={updelButtons}><Button
             title="Delete"
-            onPress={view}
-        />;
+            onPress={() => deletePost(post_id, friend_id)}
+            style={updelButtons}
+        /></View>;
     }
-
-
 
     return (
         <InnerStyledView>
@@ -92,24 +114,35 @@ const Post = ({ post_id, text, timestamp, numLikes, friend_id, view, updel }) =>
                     <Text>Num of Likes {numLikes}</Text>
                 </View>
                 <SplitViewAround>
-                    <Button
-                        title="Like"
-                        onPress={() => likePost(post_id, friend_id)}
-                    />
-                    <Button
-                        title="Unike"
-                        onPress={() => unlikePost(post_id, friend_id)}
-                    />
-
+                    <AddMargin>
+                        <Button
+                            title="Like"
+                            onPress={() => likePost(post_id, friend_id)}
+                        />
+                    </AddMargin>
+                    <AddMargin>
+                        <Button
+                            title="Unlike"
+                            onPress={() => unlikePost(post_id, friend_id)}
+                        />
+                    </AddMargin>
                 </SplitViewAround>
             </SplitViewBetween>
-            {viewButton}
-            <SplitViewBetween>
+            <AddMargin>
+                {viewButton}
+            </AddMargin>
+            <SplitViewAround>
                 {updateButton}
                 {deleteButton}
-            </SplitViewBetween>
+            </SplitViewAround>
         </InnerStyledView>
     );
+}
+
+const styles = {
+    updelButtons: {
+        width: '30vw',
+    }
 }
 
 export { Post };

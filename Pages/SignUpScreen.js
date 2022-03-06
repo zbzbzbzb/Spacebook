@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import { SpacebookInput } from '../Components/SpacebookInput.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Save as Login} from './Login.js';
+import { InnerStyledView, SplitView, NameText, SubText, OneLineText, SplitViewAround, SplitViewBetween } from '../style.js';
 
 
 class SignUpScreen extends Component {
@@ -61,7 +62,7 @@ class SignUpScreen extends Component {
   render() {
     console.log("signup");
     return (
-      <View>
+      <InnerStyledView>
         <SpacebookInput
           id="first_name"
           autoCorrect={false}
@@ -97,7 +98,7 @@ class SignUpScreen extends Component {
           title="Save"
           onPress={this.Save}
         />
-      </View>
+      </InnerStyledView>
     );
   }
 }

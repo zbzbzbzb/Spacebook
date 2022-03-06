@@ -49,3 +49,9 @@ export const OneLineText = styled.View`
     display:flex;
     flex-direction:row;
 `;
+
+export const AddMargin = styled.View`
+    margin:5px;
+`;
+
+

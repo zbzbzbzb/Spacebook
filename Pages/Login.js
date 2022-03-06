@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SpacebookInput } from '../Components/SpacebookInput.js';
+import { InnerStyledView, AddMargin } from '../style.js';
+
 
 const storeData = async (value) => {
     try {
@@ -14,9 +16,9 @@ const storeData = async (value) => {
 
 class LoginScreen extends Component {
     constructor(props) {
-        super(props);console.log(props);
-       // const {autoLogin, signUpEmail, signUpPassword} = route.params;
-        
+        super(props); console.log(props);
+        // const {autoLogin, signUpEmail, signUpPassword} = route.params;
+
         // if(autoLogin){
         //     this.state = {
         //         email: signUpEmail,
@@ -67,31 +69,39 @@ class LoginScreen extends Component {
         console.log("login");
         return (
             <View style={{ height: '100%', flex: 1, justifyContent: 'center' }}>
-
-                <SpacebookInput
-                    id="email"
-                    autoCorrect={false}
-                    label="Email"
-                    changeText={(value) => this.setState({ "email": value })}
-                    inputvalue={this.state.email}
-                />
-
-                <SpacebookInput
-                    id="password"
-                    autoCorrect={false}
-                    label="Password"
-                    secureTextEntry={true}
-                    changeText={(value) => this.setState({ "password": value })}
-                    inputvalue={this.state.password}
-                />
-                <Button
-                    title="Log In"
-                    onPress={this.Save}
-                />
-                <Button
-                    title="Sign Up"
-                    onPress={this.signUp}
-                />
+                <InnerStyledView>
+                    <AddMargin>
+                        <SpacebookInput
+                            id="email"
+                            autoCorrect={false}
+                            label="Email"
+                            changeText={(value) => this.setState({ "email": value })}
+                            inputvalue={this.state.email}
+                        />
+                    </AddMargin>
+                    <AddMargin>
+                        <SpacebookInput
+                            id="password"
+                            autoCorrect={false}
+                            label="Password"
+                            secureTextEntry={true}
+                            changeText={(value) => this.setState({ "password": value })}
+                            inputvalue={this.state.password}
+                        />
+                    </AddMargin>
+                    <AddMargin>
+                        <Button
+                            title="Log In"
+                            onPress={this.Save}
+                        />
+                    </AddMargin>
+                    <AddMargin>
+                        <Button
+                            title="Sign Up"
+                            onPress={this.signUp}
+                        />
+                    </AddMargin>
+                </InnerStyledView>
             </View>
         )
     }

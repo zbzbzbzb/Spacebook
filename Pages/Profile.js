@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import EditProfileScreen from './EditProfile.js';
 import EditProfilePhotoScreen from './EditProfilePhoto.js';
 import MyProfileScreen from './MyProfile.js';
+import EditPostScreen from './EditPostScreen.js';
 
 const Stack = createStackNavigator();
 
@@ -13,15 +14,11 @@ class ProfileScreen extends Component {
     console.log('Profile');
 
       return (
-
-          <Stack.Navigator
-            screenOptions={{
-              headerShown: false
-            }}
-          >
+          <Stack.Navigator>
             <Stack.Screen name="My Profile" component={MyProfileScreen} />
             <Stack.Screen name="Edit Profile" component={EditProfileScreen} />
             <Stack.Screen name="Edit Profile Photo" component={EditProfilePhotoScreen} />
+            <Stack.Screen name="Edit Post" component={EditPostScreen} />
           </Stack.Navigator>
       );
     
