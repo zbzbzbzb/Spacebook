@@ -7,7 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.15.17",
@@ -22,6 +23,7 @@
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-native": "0.64.3",
+    "react-native-awesome-alerts": "^1.5.2",
     "react-native-gesture-handler": "~2.1.0",
     "react-native-pager-view": "^5.4.9",
     "react-native-reanimated": "~2.3.1",
@@ -32,7 +34,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
-    "@expo/webpack-config": "^0.16.18"
+    "@expo/webpack-config": "^0.16.18",
+    "eslint": "^8.10.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-react": "^7.29.3"
   },
   "private": true
 }

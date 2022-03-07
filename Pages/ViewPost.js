@@ -1,9 +1,9 @@
-import React, { Component, Fragment } from 'react';
-import { Text, View, Button, ActivityIndicator, TouchableOpacity } from 'react-native';
+import React, {Component} from 'react';
+import {View, ActivityIndicator, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { InnerStyledView, SplitView, NameText, SubText, OneLineText, SplitViewAround, SplitViewBetween } from '../style.js';
-import { ScrollView } from 'react-native-gesture-handler';
-import { Post } from '../Components/Post.js';
+import {InnerStyledView, SubText} from '../style.js';
+import {ScrollView} from 'react-native-gesture-handler';
+import {Post} from '../Components/Post.js';
 
 class ViewPost extends Component {
   constructor(props) {
@@ -22,27 +22,27 @@ class ViewPost extends Component {
   }
 
   getPost = async () => {
-    let jsonValue = await AsyncStorage.getItem('@spacebook_details');
-    let user_data = JSON.parse(jsonValue);
-    return fetch(global.srv_url + "/user/" + this.state.friend_id + "/post/" + this.state.post_id, {
+    const jsonValue = await AsyncStorage.getItem('@spacebook_details');
+    const userData = JSON.parse(jsonValue);
+    return fetch(global.srv_url + '/user/' + this.state.friend_id + '/post/' + this.state.post_id, {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
-        'X-Authorization': user_data['token']
-      }
+        'X-Authorization': userData['token'],
+      },
     })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        console.log(responseJson);
-        this.setState({
-          postData: responseJson,
-          isLoading: false
+        .then((response) => response.json())
+        .then((responseJson) => {
+          console.log(responseJson);
+          this.setState({
+            postData: responseJson,
+            isLoading: false,
+          });
         })
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+        .catch((error) => {
+          console.log(error);
+        });
+  };
 
   render() {
     console.log('View Post');
@@ -70,7 +70,9 @@ class ViewPost extends Component {
             />
 
             <InnerStyledView>
-              <SubText>Post by {this.state.postData.author.first_name} {this.state.postData.author.last_name} </SubText>
+              <SubText>
+                Post by {this.state.postData.author.first_name} {this.state.postData.author.last_name}
+              </SubText>
             </InnerStyledView>
           </TouchableOpacity>
         </ScrollView>

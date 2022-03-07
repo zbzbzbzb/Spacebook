@@ -1,5 +1,5 @@
-import React, { Component, Fragment } from 'react';
-import { StyleSheet, Text, View, Button, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
+import React, {Component, Fragment} from 'react';
+import {Text, View, Button, ActivityIndicator, FlatList, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class FRScreen extends Component {
@@ -17,55 +17,52 @@ class FRScreen extends Component {
   }
 
   handleFR = async (friendId, methodType) => {
-    let jsonValue = await AsyncStorage.getItem('@spacebook_details'); console.log(jsonValue);
-    let user_data = JSON.parse(jsonValue);
+    const jsonValue = await AsyncStorage.getItem('@spacebook_details');
+    const userData = JSON.parse(jsonValue);
 
-    return fetch(global.srv_url + "/friendrequests/" + friendId , {
+    return fetch(global.srv_url + '/friendrequests/' + friendId, {
       method: methodType,
       headers: {
-        "Content-Type": "application/json",
-        'X-Authorization': user_data['token']
-      }
+        'Content-Type': 'application/json',
+        'X-Authorization': userData['token'],
+      },
     })
-      .then((response) => {
-        if(methodType == "POST"){
-          console.log("Friend Request Accepted");
-        }else if(methodType = "DELETE"){
-          console.log("Friend Request Rejected");
-        }
-
-      }).then(() => {
-        this.getFriendRequestsData();
-      })
-      .catch((err) => {
+        .then((response) => {
+          if (methodType == 'POST') {
+            console.log('Friend Request Accepted');
+          } else if (methodType = 'DELETE') {
+            console.log('Friend Request Rejected');
+          }
+        }).then(() => {
+          this.getFriendRequestsData();
+        })
+        .catch((err) => {
           console.log(err);
-        
-      })
-
-  }
+        });
+  };
 
   getFriendRequestsData = async () => {
-    let jsonValue = await AsyncStorage.getItem('@spacebook_details');console.log(jsonValue);
-    let user_data = JSON.parse(jsonValue);console.log(user_data);
-    return fetch(global.srv_url + "/friendrequests",{
+    const jsonValue = await AsyncStorage.getItem('@spacebook_details');
+    const userData = JSON.parse(jsonValue);
+    return fetch(global.srv_url + '/friendrequests', {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
-        'X-Authorization': user_data['token']
-      }
+        'X-Authorization': userData['token'],
+      },
     })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        console.log(responseJson);
-        this.setState({
-          isLoading: false,
-          friendRequestData: responseJson
+        .then((response) => response.json())
+        .then((responseJson) => {
+          console.log(responseJson);
+          this.setState({
+            isLoading: false,
+            friendRequestData: responseJson,
+          });
         })
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+        .catch((error) => {
+          console.log(error);
+        });
+  };
 
   render() {
     console.log('Friend requests');
@@ -82,29 +79,29 @@ class FRScreen extends Component {
       return (
         <View>
           <Fragment>
-          <FlatList
-            data={this.state.friendRequestData}
-            renderItem={({ item }) =>
-              <TouchableOpacity>
-                <View >
+            <FlatList
+              data={this.state.friendRequestData}
+              renderItem={({item}) =>
+                <TouchableOpacity>
                   <View >
-                    <Text>{item.first_name} {item.last_name}</Text>
-                  </View>
-                  <View>
-                    <Button
-                      title="Accept"
-                      onPress={() => this.handleFR(item.user_id, "POST")}
+                    <View >
+                      <Text>{item.first_name} {item.last_name}</Text>
+                    </View>
+                    <View>
+                      <Button
+                        title="Accept"
+                        onPress={() => this.handleFR(item.user_id, 'POST')}
                       />
-                    <Button 
+                      <Button
                         title="Reject"
-                        onPress={() => this.handleFR(item.user_id, "DELETE")}
-                        />
+                        onPress={() => this.handleFR(item.user_id, 'DELETE')}
+                      />
+                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
-            }
-            keyExtractor={item => item.user_id}
-          />
+                </TouchableOpacity>
+              }
+              keyExtractor={(item) => item.user_id}
+            />
           </Fragment>
         </View>
 

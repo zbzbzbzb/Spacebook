@@ -1,70 +1,70 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { Camera } from 'expo-camera';
+import React, {Component} from 'react';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {Camera} from 'expo-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class EditProfilePhotoScreen extends Component{
-  constructor(props){
+class EditProfilePhotoScreen extends Component {
+  constructor(props) {
     super(props);
 
     this.state = {
       hasPermission: null,
-      type: Camera.Constants.Type.back
-    }
+      type: Camera.Constants.Type.back,
+    };
   }
 
-  async componentDidMount(){
-    const { status } = await Camera.requestCameraPermissionsAsync();
+  async componentDidMount() {
+    const {status} = await Camera.requestCameraPermissionsAsync();
     this.setState({hasPermission: status === 'granted'});
   }
 
-backToMyProfile = () => {
-    this.props.navigation.navigate("My Profile");
-}
+  backToMyProfile = () => {
+    this.props.navigation.navigate('My Profile');
+  };
 
   sendToServer = async (data) => {
-    let jsonValue = await AsyncStorage.getItem('@spacebook_details');
-    let user_data = JSON.parse(jsonValue);
+    const jsonValue = await AsyncStorage.getItem('@spacebook_details');
+    const userData = JSON.parse(jsonValue);
 
-      let res = await fetch(data.base64);
-      let blob = await res.blob();
+    const res = await fetch(data.base64);
+    const blob = await res.blob();
 
-      return fetch(global.srv_url + "/user/" + user_data["id"] + "/photo", {
-          method: "POST",
-          headers: {
-              "Content-Type": "image/png",
-              "X-Authorization": user_data["token"]
-          },
-          body: blob
-      })
-      .then((response) => {
-          console.log("Picture added", response);
+    return fetch(global.srv_url + '/user/' + userData['id'] + '/photo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'image/png',
+        'X-Authorization': userData['token'],
+      },
+      body: blob,
+    })
+        .then((response) => {
+          console.log('Picture added', response);
           this.backToMyProfile();
-      })
-      .catch((err) => {
+        })
+        .catch((err) => {
           console.log(err);
-      })
-  }
+        });
+  };
 
-    takePicture = async () => {
-        if(this.camera){
-            const options = {
-                quality: 0.5, 
-                base64: true,
-                onPictureSaved: (data) => this.sendToServer(data)
-            };
-            await this.camera.takePictureAsync(options); 
-        } 
+  takePicture = async () => {
+    if (this.camera) {
+      const options = {
+        quality: 0.5,
+        base64: true,
+        onPictureSaved: (data) => this.sendToServer(data),
+      };
+      await this.camera.takePictureAsync(options);
     }
+  };
 
-  render(){
-    if(this.state.hasPermission){
-      return(
+  render() {
+    if (this.state.hasPermission) {
+      return (
         <View style={styles.container}>
-          <Camera 
-            style={styles.camera} 
+          <Camera
+            style={styles.camera}
             type={this.state.type}
-            ref={ref => this.camera = ref}
+            ref={(ref) => this.camera = ref}
           >
             <View style={styles.buttonContainer}>
               <TouchableOpacity
@@ -77,7 +77,7 @@ backToMyProfile = () => {
               <TouchableOpacity
                 style={styles.buttonLeft}
                 onPress={() => {
-                    this.backToMyProfile();
+                  this.backToMyProfile();
                 }}>
                 <Text style={styles.text}> Back </Text>
               </TouchableOpacity>
@@ -85,8 +85,8 @@ backToMyProfile = () => {
           </Camera>
         </View>
       );
-    }else{
-      return(
+    } else {
+      return (
         <Text>No access to camera</Text>
       );
     }

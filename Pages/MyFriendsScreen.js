@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { Text, View, Button, ActivityIndicator, FlatList, TouchableOpacity, Image } from 'react-native';
+import React, {Component} from 'react';
+import {View, Button, ActivityIndicator, FlatList, TouchableOpacity, Image} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView } from 'react-native-gesture-handler';
-import { InnerStyledView, SplitView, NameText, SubText, OneLineText } from '../style.js';
+import {ScrollView} from 'react-native-gesture-handler';
+import {InnerStyledView, SplitView, NameText} from '../style.js';
 
 class MyFriendsScreen extends Component {
   constructor(props) {
@@ -19,57 +19,57 @@ class MyFriendsScreen extends Component {
   }
 
   viewFriend = (id) => {
-    this.props.navigation.navigate("Friends Profile", {
-      friend_id: id
+    this.props.navigation.navigate('Friends Profile', {
+      friend_id: id,
     });
-  }
+  };
 
   getMyFriendsData = async () => {
-    let jsonValue = await AsyncStorage.getItem('@spacebook_details'); console.log(jsonValue);
-    let user_data = JSON.parse(jsonValue); console.log(user_data);
-    return fetch(global.srv_url + "/user/" + user_data['id'] + "/friends", {
+    const jsonValue = await AsyncStorage.getItem('@spacebook_details');
+    const userData = JSON.parse(jsonValue);
+    return fetch(global.srv_url + '/user/' + userData['id'] + '/friends', {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
-        'X-Authorization': user_data['token']
-      }
+        'X-Authorization': userData['token'],
+      },
     })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        responseJson.forEach((element, index) => {
-          this.getPhoto(element.user_id, index);
-        });
-        console.table(responseJson[0].profile_photo);
-        this.setState({
-          isLoading: false,
-          myFriendsData: responseJson
+        .then((response) => response.json())
+        .then((responseJson) => {
+          responseJson.forEach((element, index) => {
+            this.getPhoto(element.user_id, index);
+          });
+          console.table(responseJson[0].profile_photo);
+          this.setState({
+            isLoading: false,
+            myFriendsData: responseJson,
+          });
         })
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+        .catch((error) => {
+          console.log(error);
+        });
+  };
 
-  getPhoto = async (friends_user_id, index) => {
-    let jsonValue = await AsyncStorage.getItem('@spacebook_details');
-    let user_data = JSON.parse(jsonValue);
-    fetch(global.srv_url + "/user/" + friends_user_id + "/photo", {
+  getPhoto = async (friendsUserId, index) => {
+    const jsonValue = await AsyncStorage.getItem('@spacebook_details');
+    const userData = JSON.parse(jsonValue);
+    fetch(global.srv_url + '/user/' + friendsUserId + '/photo', {
       method: 'GET',
       headers: {
-        'X-Authorization': user_data['token']
-      }
+        'X-Authorization': userData['token'],
+      },
     })
-      .then((res) => {
-        return res.blob();
-      })
-      .then((resBlob) => {
-        let data = URL.createObjectURL(resBlob);
-        myFriendsData[index]["profile_photo"] = data;
-      })
-      .catch((err) => {
-        console.log("error", err)
-      });
-  }
+        .then((res) => {
+          return res.blob();
+        })
+        .then((resBlob) => {
+          const data = URL.createObjectURL(resBlob);
+          myFriendsData[index]['profile_photo'] = data;
+        })
+        .catch((err) => {
+          console.log('error', err);
+        });
+  };
 
   render() {
     console.log('MyFriends');
@@ -87,7 +87,7 @@ class MyFriendsScreen extends Component {
         <ScrollView>
           <FlatList
             data={this.state.myFriendsData}
-            renderItem={({ item }) =>
+            renderItem={({item}) =>
               <TouchableOpacity>
                 <InnerStyledView>
                   <SplitView>
@@ -98,10 +98,10 @@ class MyFriendsScreen extends Component {
                       style={{
                         width: 80,
                         height: 80,
-                        borderWidth: 2
+                        borderWidth: 2,
                       }}
                     />
-                    <View style={{paddingLeft:'7px'}}>
+                    <View style={{paddingLeft: '7px'}}>
                       <NameText>{item.user_givenname} {item.user_familyname}</NameText>
                     </View>
                   </SplitView>
@@ -114,7 +114,7 @@ class MyFriendsScreen extends Component {
                 </InnerStyledView>
               </TouchableOpacity>
             }
-            keyExtractor={item => item.user_id}
+            keyExtractor={(item) => item.user_id}
           />
         </ScrollView>
 

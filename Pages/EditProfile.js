@@ -1,9 +1,9 @@
-import React, { Component, Fragment } from 'react';
-import { StyleSheet, Text, View, Button, ActivityIndicator, FlatList, TextInput, Alert } from 'react-native';
+import React, {Component} from 'react';
+import {View, Button, ActivityIndicator} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SpacebookInput } from '../Components/SpacebookInput.js';
-import { InnerStyledView, SplitView, NameText, SubText, OneLineText, SplitViewAround, SplitViewBetween } from '../style.js';
-import { ScrollView } from 'react-native-gesture-handler';
+import {SpacebookInput} from '../Components/SpacebookInput.js';
+import {InnerStyledView} from '../style.js';
+import {ScrollView} from 'react-native-gesture-handler';
 
 class EditProfileScreen extends Component {
   constructor(props) {
@@ -11,11 +11,11 @@ class EditProfileScreen extends Component {
 
     this.state = {
       profileData: [],
-      first_name: "",
-      second_name: "",
-      email: "",
-      password: "",
-      isLoading: true
+      first_name: '',
+      second_name: '',
+      email: '',
+      password: '',
+      isLoading: true,
     };
   }
 
@@ -24,58 +24,58 @@ class EditProfileScreen extends Component {
   }
 
   getProfileData = async () => {
-    let jsonValue = await AsyncStorage.getItem('@spacebook_details'); console.log(jsonValue);
-    let user_data = JSON.parse(jsonValue); console.log(user_data);
-    return fetch(global.srv_url + "/user/" + user_data['id'], {
-        method: 'get',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Authorization': user_data['token']
-        }
+    const jsonValue = await AsyncStorage.getItem('@spacebook_details');
+    const userData = JSON.parse(jsonValue);
+    return fetch(global.srv_url + '/user/' + userData['id'], {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': userData['token'],
+      },
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log(responseJson);
-            this.setState({
-                profileData: responseJson,
-                first_name: responseJson.first_name,
-                second_name: responseJson.last_name,
-                email: responseJson.email,
-                password: responseJson.password,
-                isLoading : false
-            })
+          console.log(responseJson);
+          this.setState({
+            profileData: responseJson,
+            first_name: responseJson.first_name,
+            second_name: responseJson.last_name,
+            email: responseJson.email,
+            password: responseJson.password,
+            isLoading: false,
+          });
         })
         .catch((error) => {
-            console.log(error);
+          console.log(error);
         });
-}
+  };
 
   patchProfile = async () => {
-    let jsonValue = await AsyncStorage.getItem('@spacebook_details'); console.log(jsonValue);
-    let user_data = JSON.parse(jsonValue);
+    const jsonValue = await AsyncStorage.getItem('@spacebook_details');
+    const userData = JSON.parse(jsonValue);
 
-    return fetch(global.srv_url + "/user/" + user_data['id'] , {
+    return fetch(global.srv_url + '/user/' + userData['id'], {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        'X-Authorization': user_data['token']
+        'X-Authorization': userData['token'],
       },
       body: JSON.stringify({
         first_name: this.state.first_name,
         last_name: this.state.second_name,
         email: this.state.email,
-        password: this.state.password
-      })
+        password: this.state.password,
+      }),
     })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        console.log(responseJson);
-        this.props.navigation.navigate("My Profile");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+        .then((response) => response.json())
+        .then((responseJson) => {
+          console.log(responseJson);
+          this.props.navigation.navigate('My Profile');
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+  };
 
   render() {
     console.log('Edit Post');
@@ -96,7 +96,7 @@ class EditProfileScreen extends Component {
               id="first_name"
               autoCorrect={false}
               label="First Name"
-              changeText={(value) => this.setState({ "first_name": value })}
+              changeText={(value) => this.setState({'first_name': value})}
               inputvalue={this.state.first_name}
             />
 
@@ -104,14 +104,14 @@ class EditProfileScreen extends Component {
               id="second_name"
               autoCorrect={false}
               label="Second Name"
-              changeText={(value) => this.setState({ "second_name": value })}
+              changeText={(value) => this.setState({'second_name': value})}
               inputvalue={this.state.second_name}
             />
             <SpacebookInput
               id="email"
               autoCorrect={false}
               label="Email"
-              changeText={(value) => this.setState({ "email": value })}
+              changeText={(value) => this.setState({'email': value})}
               inputvalue={this.state.email}
             />
             <SpacebookInput
@@ -119,7 +119,7 @@ class EditProfileScreen extends Component {
               autoCorrect={false}
               label="Password"
               secureTextEntry={true}
-              changeText={(value) => this.setState({ "password": value })}
+              changeText={(value) => this.setState({'password': value})}
               inputvalue={this.state.password}
             />
 

@@ -1,110 +1,140 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import React, {Component} from 'react';
+import {View, Button} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SpacebookInput } from '../Components/SpacebookInput.js';
-import { InnerStyledView, AddMargin } from '../style.js';
-
+import {SpacebookInput} from '../Components/SpacebookInput.js';
+import {InnerStyledView, AddMargin} from '../style.js';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const storeData = async (value) => {
-    try {
-        const jsonValue = JSON.stringify(value)
-        await AsyncStorage.setItem('@spacebook_details', jsonValue)
-    } catch (e) {
-        console.error(error);
-    }
-}
+  try {
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem('@spacebook_details', jsonValue);
+  } catch (e) {
+    console.error(error);
+  }
+};
 
 class LoginScreen extends Component {
-    constructor(props) {
-        super(props); console.log(props);
-        // const {autoLogin, signUpEmail, signUpPassword} = route.params;
+  constructor(props) {
+    super(props);
 
-        // if(autoLogin){
-        //     this.state = {
-        //         email: signUpEmail,
-        //         password: signUpPassword,
-        //     };
-        //     this.Save;
-        // }
-
-        this.state = {
-            email: "zfbobat@gmail.co.uk",
-            password: "zahir123",
-            //email: "don@ali.com",
-            //password: "donali",
-        };
+    if (this.props.route.params !== undefined) {
+      this.state = {
+        email: this.props.route.params.signUpEmail,
+        password: this.props.route.params.signUpPassword,
+      };
+      this.Save;
     }
 
-    signUp = () => {
-        this.props.navigation.navigate("SignUp");
-    }
+    this.state = {
+      email: 'zfbobat@gmail.co.uk',
+      password: 'zahir123',
+      showAlert: false,
+      alertError: '',
+    };
+  }
 
-    Save = () => {
+  signUp = () => {
+    this.props.navigation.navigate('SignUp');
+  };
 
-        fetch(global.srv_url + '/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: this.state.email,
-                password: this.state.password
-            })
+  showAlert = () => {
+    this.setState({
+      showAlert: true,
+    });
+  };
+
+  hideAlert = () => {
+    this.setState({
+      showAlert: false,
+    });
+  };
+
+  Save = () => {
+    fetch(global.srv_url + '/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: this.state.email,
+        password: this.state.password,
+      }),
+    })
+        .then((response) => response.json())
+        .then((json) => {
+          console.log(json);
+          storeData(json);
+          this.props.navigation.navigate('Homescreen');
         })
-            .then((response) => response.json())
-            .then((json) => {
-                console.log(json);
-                storeData(json);
-                this.props.navigation.navigate("Homescreen");
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+        .catch((error) => {
+          console.log(error.message);
+          this.setState({
+            alertError: '',
+          });
+          this.showAlert();
+        });
 
-        console.log(this.state);
+    console.log(this.state);
+  };
 
-    }
+  render() {
+    console.log('login');
+    const {showAlert} = this.state;
+    return (
+      <View style={{height: '100%', flex: 1, justifyContent: 'center'}}>
+        <InnerStyledView>
+          <AddMargin>
+            <SpacebookInput
+              id="email"
+              autoCorrect={false}
+              label="Email"
+              changeText={(value) => this.setState({'email': value})}
+              inputvalue={this.state.email}
+            />
+          </AddMargin>
+          <AddMargin>
+            <SpacebookInput
+              id="password"
+              autoCorrect={false}
+              label="Password"
+              secureTextEntry={true}
+              changeText={(value) => this.setState({'password': value})}
+              inputvalue={this.state.password}
+            />
+          </AddMargin>
+          <AddMargin>
+            <Button
+              title="Log In"
+              onPress={this.Save}
+            />
+          </AddMargin>
+          <AddMargin>
+            <Button
+              title="Sign Up"
+              onPress={this.signUp}
+            />
+          </AddMargin>
+        </InnerStyledView>
 
-    render() {
-        console.log("login");
-        return (
-            <View style={{ height: '100%', flex: 1, justifyContent: 'center' }}>
-                <InnerStyledView>
-                    <AddMargin>
-                        <SpacebookInput
-                            id="email"
-                            autoCorrect={false}
-                            label="Email"
-                            changeText={(value) => this.setState({ "email": value })}
-                            inputvalue={this.state.email}
-                        />
-                    </AddMargin>
-                    <AddMargin>
-                        <SpacebookInput
-                            id="password"
-                            autoCorrect={false}
-                            label="Password"
-                            secureTextEntry={true}
-                            changeText={(value) => this.setState({ "password": value })}
-                            inputvalue={this.state.password}
-                        />
-                    </AddMargin>
-                    <AddMargin>
-                        <Button
-                            title="Log In"
-                            onPress={this.Save}
-                        />
-                    </AddMargin>
-                    <AddMargin>
-                        <Button
-                            title="Sign Up"
-                            onPress={this.signUp}
-                        />
-                    </AddMargin>
-                </InnerStyledView>
-            </View>
-        )
-    }
+        <AwesomeAlert
+          show={showAlert}
+          showProgress={false}
+          title="I've encountered a problem!"
+          message={this.state.alertError}
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={false}
+          showConfirmButton={true}
+          confirmText="Ok"
+          confirmButtonColor="#DD6B55"
+          onConfirmPressed={() => {
+            this.hideAlert();
+          }}
+        />
+      </View>
+    );
+  }
 }
 
 export default LoginScreen;
