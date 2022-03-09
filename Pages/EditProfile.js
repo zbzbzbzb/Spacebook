@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SpacebookInput} from '../Components/SpacebookInput.js';
 import {InnerStyledView} from '../style.js';
 import {ScrollView} from 'react-native-gesture-handler';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 class EditProfileScreen extends Component {
   constructor(props) {
@@ -16,12 +17,26 @@ class EditProfileScreen extends Component {
       email: '',
       password: '',
       isLoading: true,
+      showAlert: false,
+      alertError: '',
     };
   }
 
   componentDidMount() {
     this.getProfileData();
   }
+
+  showAlert = () => {
+    this.setState({
+      showAlert: true,
+    });
+  };
+
+  hideAlert = () => {
+    this.setState({
+      showAlert: false,
+    });
+  };
 
   getProfileData = async () => {
     const jsonValue = await AsyncStorage.getItem('@spacebook_details');
@@ -67,10 +82,34 @@ class EditProfileScreen extends Component {
         password: this.state.password,
       }),
     })
-        .then((response) => response.json())
-        .then((responseJson) => {
-          console.log(responseJson);
-          this.props.navigation.navigate('My Profile');
+        .then((response) => response)
+        .then((data) => {
+          let text;
+          switch (data.status) {
+            case 200:
+              AsyncStorage.clear();
+              jsonValue.clear;
+              userData.clear;
+              this.props.navigation.navigate('My Profile');
+              text = 'You have logged out';
+              break;
+            case 400:
+              text = 'User was not edited - Please check your inputs';
+              break;
+            case 401:
+              text = 'You are not logged in';
+              break;
+            case 403:
+              text = 'Forbidden Request';
+              break;
+            case 500:
+              text = 'A Server Error has occurred';
+              break;
+          }
+          this.setState({
+            alertError: text,
+          });
+          this.showAlert();
         })
         .catch((error) => {
           console.log(error);
@@ -79,6 +118,7 @@ class EditProfileScreen extends Component {
 
   render() {
     console.log('Edit Post');
+    const {showAlert} = this.state;
     if (this.state.isLoading) {
       return (
         <View>
@@ -128,6 +168,20 @@ class EditProfileScreen extends Component {
               onPress={this.patchProfile}
             />
           </InnerStyledView>
+          <AwesomeAlert
+            show={showAlert}
+            showProgress={false}
+            title={this.state.alertError}
+            closeOnTouchOutside={true}
+            closeOnHardwareBackPress={false}
+            showCancelButton={false}
+            showConfirmButton={true}
+            confirmText="Ok"
+            confirmButtonColor="#DD6B55"
+            onConfirmPressed={() => {
+              this.hideAlert();
+            }}
+          />
         </ScrollView>
 
       );

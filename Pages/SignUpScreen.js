@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import {Button} from 'react-native';
+import {Button, View} from 'react-native';
 import {SpacebookInput} from '../Components/SpacebookInput.js';
 import {InnerStyledView} from '../style.js';
-
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 class SignUpScreen extends Component {
   constructor(props) {
@@ -13,9 +13,22 @@ class SignUpScreen extends Component {
       second_name: '',
       email: '',
       password: '',
+      showAlert: false,
+      alertError: '',
     };
   }
 
+  showAlert = () => {
+    this.setState({
+      showAlert: true,
+    });
+  };
+
+  hideAlert = () => {
+    this.setState({
+      showAlert: false,
+    });
+  };
 
   Save = async () => {
     return fetch(global.srv_url + '/user', {
@@ -32,15 +45,26 @@ class SignUpScreen extends Component {
       }),
     })
         .then((response) => {
-          if (response.status == 400) {
-            console.log('User was not created - Email address errors');
-          } else {
-            console.log('User Created', response);
+          if (response.status == 201) {
             this.props.navigation.navigate('Login', {
               autoLogin: true,
               signUpEmail: this.state.email,
               signUpPassword: this.state.password,
             });
+          } else {
+            let text;
+            switch (response.status) {
+              case 400:
+                text = 'User was not created - Please check your inputs';
+                break;
+              case 500:
+                text = 'A Server Error has occurred';
+                break;
+            }
+            this.setState({
+              alertError: text,
+            });
+            this.showAlert();
           }
         })
         .catch((err) => {
@@ -55,44 +79,62 @@ class SignUpScreen extends Component {
 
   render() {
     console.log('signup');
+    const {showAlert} = this.state;
     return (
-      <InnerStyledView>
-        <SpacebookInput
-          id="first_name"
-          autoCorrect={false}
-          label="First Name"
-          changeText={(value) => this.setState({'first_name': value})}
-          inputvalue={this.state.first_name}
-        />
+      <View>
+        <InnerStyledView>
+          <SpacebookInput
+            id="first_name"
+            autoCorrect={false}
+            label="First Name"
+            changeText={(value) => this.setState({'first_name': value})}
+            inputvalue={this.state.first_name}
+          />
 
-        <SpacebookInput
-          id="second_name"
-          autoCorrect={false}
-          label="Second Name"
-          changeText={(value) => this.setState({'second_name': value})}
-          inputvalue={this.state.second_name}
-        />
-        <SpacebookInput
-          id="email"
-          autoCorrect={false}
-          label="Email"
-          changeText={(value) => this.setState({'email': value})}
-          inputvalue={this.state.email}
-        />
-        <SpacebookInput
-          id="password"
-          autoCorrect={false}
-          label="Password"
-          secureTextEntry = {true}
-          changeText={(value) => this.setState({'password': value})}
-          inputvalue={this.state.password}
-        />
+          <SpacebookInput
+            id="second_name"
+            autoCorrect={false}
+            label="Second Name"
+            changeText={(value) => this.setState({'second_name': value})}
+            inputvalue={this.state.second_name}
+          />
+          <SpacebookInput
+            id="email"
+            autoCorrect={false}
+            label="Email"
+            changeText={(value) => this.setState({'email': value})}
+            inputvalue={this.state.email}
+          />
+          <SpacebookInput
+            id="password"
+            autoCorrect={false}
+            label="Password"
+            secureTextEntry={true}
+            changeText={(value) => this.setState({'password': value})}
+            inputvalue={this.state.password}
+          />
 
-        <Button
-          title="Save"
-          onPress={this.Save}
+          <Button
+            title="Save"
+            onPress={this.Save}
+          />
+
+        </InnerStyledView>
+        <AwesomeAlert
+          show={showAlert}
+          showProgress={false}
+          title={this.state.alertError}
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={false}
+          showConfirmButton={true}
+          confirmText="Ok"
+          confirmButtonColor="#DD6B55"
+          onConfirmPressed={() => {
+            this.hideAlert();
+          }}
         />
-      </InnerStyledView>
+      </View>
     );
   }
 }

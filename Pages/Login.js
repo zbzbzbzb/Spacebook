@@ -50,32 +50,44 @@ class LoginScreen extends Component {
     });
   };
 
-  Save = () => {
+  Save = async () => {
     fetch(global.srv_url + '/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'text/xml',
       },
       body: JSON.stringify({
         email: this.state.email,
         password: this.state.password,
       }),
     })
-        .then((response) => response.json())
-        .then((json) => {
-          console.log(json);
-          storeData(json);
-          this.props.navigation.navigate('Homescreen');
+        .then((response) => response)
+        .then((data) => {
+          if (data.status == 200) {
+            data.json().then((json) =>{
+              storeData(json);
+              this.props.navigation.navigate('Homescreen');
+            });
+          } else {
+            let text;
+            switch (json.status) {
+              case 400:
+                text = 'Email/Password Incorrect';
+                break;
+              case 500:
+                text = 'A Server Error has occurred';
+                break;
+            }
+            this.setState({
+              alertError: text,
+            });
+            this.showAlert();
+          }
         })
-        .catch((error) => {
-          console.log(error.message);
-          this.setState({
-            alertError: '',
-          });
-          this.showAlert();
+        .catch((err) => {
+          console.log(err);
         });
-
-    console.log(this.state);
   };
 
   render() {
@@ -120,8 +132,7 @@ class LoginScreen extends Component {
         <AwesomeAlert
           show={showAlert}
           showProgress={false}
-          title="I've encountered a problem!"
-          message={this.state.alertError}
+          title={this.state.alertError}
           closeOnTouchOutside={true}
           closeOnHardwareBackPress={false}
           showCancelButton={false}

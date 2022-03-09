@@ -3,6 +3,7 @@ import {View, Button, ActivityIndicator, FlatList, TouchableOpacity, Image} from
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ScrollView} from 'react-native-gesture-handler';
 import {InnerStyledView, SplitView, NameText} from '../style.js';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 class MyFriendsScreen extends Component {
   constructor(props) {
@@ -11,6 +12,8 @@ class MyFriendsScreen extends Component {
     this.state = {
       isLoading: true,
       myFriendsData: [],
+      showAlert: false,
+      alertError: '',
     };
   }
 
@@ -24,6 +27,17 @@ class MyFriendsScreen extends Component {
     });
   };
 
+  showAlert = () => {
+    this.setState({
+      showAlert: true,
+    });
+  };
+
+  hideAlert = () => {
+    this.setState({
+      showAlert: false,
+    });
+  };
   getMyFriendsData = async () => {
     const jsonValue = await AsyncStorage.getItem('@spacebook_details');
     const userData = JSON.parse(jsonValue);
@@ -34,16 +48,39 @@ class MyFriendsScreen extends Component {
         'X-Authorization': userData['token'],
       },
     })
-        .then((response) => response.json())
-        .then((responseJson) => {
-          responseJson.forEach((element, index) => {
-            this.getPhoto(element.user_id, index);
-          });
-          console.table(responseJson[0].profile_photo);
-          this.setState({
-            isLoading: false,
-            myFriendsData: responseJson,
-          });
+        .then((response) => response)
+        .then((data) => {
+          if (data.status == 200) {
+            data.json().then((json) =>{
+              json.forEach((element, index) => {
+                this.getPhoto(element.user_id, index);
+              });
+              this.setState({
+                isLoading: false,
+                myFriendsData: json,
+              });
+            });
+          } else {
+            let text;
+            switch (json.status) {
+              case 401:
+                text = 'You are not logged in';
+                break;
+              case 403:
+                text = 'You can only view your friends';
+                break;
+              case 404:
+                text = 'Not Found';
+                break;
+              case 500:
+                text = 'A Server Error has occurred';
+                break;
+            }
+            this.setState({
+              alertError: text,
+            });
+            this.showAlert();
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -73,6 +110,7 @@ class MyFriendsScreen extends Component {
 
   render() {
     console.log('MyFriends');
+    const {showAlert} = this.state;
     if (this.state.isLoading) {
       return (
         <View>
@@ -116,9 +154,22 @@ class MyFriendsScreen extends Component {
             }
             keyExtractor={(item) => item.user_id}
           />
+
+          <AwesomeAlert
+            show={showAlert}
+            showProgress={false}
+            title={this.state.alertError}
+            closeOnTouchOutside={true}
+            closeOnHardwareBackPress={false}
+            showCancelButton={false}
+            showConfirmButton={true}
+            confirmText="Ok"
+            confirmButtonColor="#DD6B55"
+            onConfirmPressed={() => {
+              this.hideAlert();
+            }}
+          />
         </ScrollView>
-
-
       );
     }
   }

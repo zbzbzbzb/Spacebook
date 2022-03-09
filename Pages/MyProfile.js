@@ -5,6 +5,7 @@ import {InnerStyledView, SplitView, NameText,
   SubText, OneLineText, SplitViewBetween} from '../style.js';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Post} from '../Components/Post.js';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 class MyProfileScreen extends Component {
   constructor(props) {
@@ -15,6 +16,8 @@ class MyProfileScreen extends Component {
       profileData: [],
       allPostsData: [],
       photo: null,
+      showAlert: false,
+      alertError: '',
     };
   }
 
@@ -23,6 +26,18 @@ class MyProfileScreen extends Component {
     await this.getPhotoData();
     await this.getAllPosts();
   }
+
+  showAlert = () => {
+    this.setState({
+      showAlert: true,
+    });
+  };
+
+  hideAlert = () => {
+    this.setState({
+      showAlert: false,
+    });
+  };
 
   editProfile = () => {
     this.props.navigation.navigate('Edit Profile');
@@ -41,12 +56,28 @@ class MyProfileScreen extends Component {
         'X-Authorization': userData['token'],
       },
     })
-        .then((response) => response.json())
-        .then((responseJson) => {
-          AsyncStorage.clear();
-          jsonValue.clear;
-          userData.clear;
-          this.props.navigation.navigate('Login');
+        .then((response) => response)
+        .then((data) => {
+          let text;
+          switch (data.status) {
+            case 200:
+              AsyncStorage.clear();
+              jsonValue.clear;
+              userData.clear;
+              this.props.navigation.navigate('Login');
+              text = 'You have logged out';
+              break;
+            case 401:
+              text = 'You are not logged in';
+              break;
+            case 500:
+              text = 'A Server Error has occurred';
+              break;
+          }
+          this.setState({
+            alertError: text,
+          });
+          this.showAlert();
         })
         .catch((error) => {
           console.log(error);
@@ -135,6 +166,7 @@ class MyProfileScreen extends Component {
   };
 
   render() {
+    const {showAlert} = this.state;
     console.log('My Profile');
     if (this.state.isLoading) {
       return (
@@ -200,7 +232,20 @@ class MyProfileScreen extends Component {
             keyExtractor={(item) => item.post_id}
           />
 
-
+          <AwesomeAlert
+            show={showAlert}
+            showProgress={false}
+            title={this.state.alertError}
+            closeOnTouchOutside={true}
+            closeOnHardwareBackPress={false}
+            showCancelButton={false}
+            showConfirmButton={true}
+            confirmText="Ok"
+            confirmButtonColor="#DD6B55"
+            onConfirmPressed={() => {
+              this.hideAlert();
+            }}
+          />
         </ScrollView>
       );
     }
