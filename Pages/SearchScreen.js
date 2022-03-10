@@ -5,7 +5,7 @@ import SelectDropdown from 'react-native-select-dropdown';
 import {SpacebookInput} from '../Components/SpacebookInput.js';
 import {InnerStyledView, SplitViewBetween} from '../style.js';
 import {ScrollView} from 'react-native-gesture-handler';
-
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const searchInDrop = ['Friends', 'All'];
 
@@ -16,11 +16,25 @@ class SearchScreen extends Component {
     this.state = {
       searchData: [],
       q: '',
-      search_in: '',
+      search_in: 'All',
       limit: 20,
       offset: 0,
+      showAlert: false,
+      alertError: '',
     };
   }
+
+  showAlert = () => {
+    this.setState({
+      showAlert: true,
+    });
+  };
+
+  hideAlert = () => {
+    this.setState({
+      showAlert: false,
+    });
+  };
 
   addFriend = async (friendId) => {
     const jsonValue = await AsyncStorage.getItem('@spacebook_details');
@@ -34,11 +48,28 @@ class SearchScreen extends Component {
       },
     })
         .then((response) => {
-          if (response.status == 403) {
-            alert('User already added as a friend');
-          } else {
-            console.log('Friend Request Sent');
+          let text;
+          switch (response.status) {
+            case 200:
+              text = 'Friend Request Sent';
+              break;
+            case 401:
+              text = 'You are not logged in';
+              break;
+            case 403:
+              text = 'User already added as a friend';
+              break;
+            case 403:
+              text = 'Friend not found';
+              break;
+            case 500:
+              text = 'A Server Error has occurred';
+              break;
           }
+          this.setState({
+            alertError: text,
+          });
+          this.showAlert();
         })
         .catch((err) => {
           if (err.status == 403) {
@@ -63,13 +94,32 @@ class SearchScreen extends Component {
         'X-Authorization': userData['token'],
       },
     })
-        .then((response) => response.json())
-        .then((responseJson) => {
-          console.log(responseJson);
-          this.setState({
-            isLoading: false,
-            searchData: responseJson,
-          });
+        .then((response) => {
+          let text;
+          if (response.status == 200) {
+            response.json().then((json) =>{
+              this.setState({
+                isLoading: false,
+                searchData: json,
+              });
+            });
+          } else {
+            switch (response.status) {
+              case 400:
+                text = 'The text you entered was invalid';
+                break;
+              case 401:
+                text = 'You are not logged in';
+                break;
+              case 500:
+                text = 'A Server Error has occurred';
+                break;
+            }
+            this.setState({
+              alertError: text,
+            });
+            this.showAlert();
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -78,6 +128,7 @@ class SearchScreen extends Component {
 
   render() {
     console.log('Search');
+    const {showAlert} = this.state;
     return (
       <ScrollView>
         <InnerStyledView>
@@ -126,6 +177,20 @@ class SearchScreen extends Component {
             keyExtractor={(item) => item.user_id}
           />
         </Fragment>
+        <AwesomeAlert
+          show={showAlert}
+          showProgress={false}
+          title={this.state.alertError}
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={false}
+          showConfirmButton={true}
+          confirmText="Ok"
+          confirmButtonColor="#DD6B55"
+          onConfirmPressed={() => {
+            this.hideAlert();
+          }}
+        />
       </ScrollView>
 
     );

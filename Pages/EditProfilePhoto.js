@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {Camera} from 'expo-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 class EditProfilePhotoScreen extends Component {
   constructor(props) {
@@ -10,8 +11,22 @@ class EditProfilePhotoScreen extends Component {
     this.state = {
       hasPermission: null,
       type: Camera.Constants.Type.back,
+      showAlert: false,
+      alertError: '',
     };
   }
+
+  showAlert = () => {
+    this.setState({
+      showAlert: true,
+    });
+  };
+
+  hideAlert = () => {
+    this.setState({
+      showAlert: false,
+    });
+  };
 
   async componentDidMount() {
     const {status} = await Camera.requestCameraPermissionsAsync();
@@ -38,8 +53,29 @@ class EditProfilePhotoScreen extends Component {
       body: blob,
     })
         .then((response) => {
-          console.log('Picture added', response);
-          this.backToMyProfile();
+          let text;
+          switch (response.status) {
+            case 200:
+              console.log('Picture added', response);
+              this.backToMyProfile();
+              break;
+            case 400:
+              text = 'There was something wrong with the Image';
+              break;
+            case 401:
+              text = 'You are not logged in';
+              break;
+            case 404:
+              text = 'Not Found';
+              break;
+            case 500:
+              text = 'A Server Error has occurred';
+              break;
+          }
+          this.setState({
+            alertError: text,
+          });
+          this.showAlert();
         })
         .catch((err) => {
           console.log(err);
@@ -58,6 +94,7 @@ class EditProfilePhotoScreen extends Component {
   };
 
   render() {
+    const {showAlert} = this.state;
     if (this.state.hasPermission) {
       return (
         <View style={styles.container}>
@@ -83,6 +120,20 @@ class EditProfilePhotoScreen extends Component {
               </TouchableOpacity>
             </View>
           </Camera>
+          <AwesomeAlert
+            show={showAlert}
+            showProgress={false}
+            title={this.state.alertError}
+            closeOnTouchOutside={true}
+            closeOnHardwareBackPress={false}
+            showCancelButton={false}
+            showConfirmButton={true}
+            confirmText="Ok"
+            confirmButtonColor="#DD6B55"
+            onConfirmPressed={() => {
+              this.hideAlert();
+            }}
+          />
         </View>
       );
     } else {

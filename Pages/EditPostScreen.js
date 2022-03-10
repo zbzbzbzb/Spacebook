@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SpacebookInput} from '../Components/SpacebookInput.js';
 import {InnerStyledView} from '../style.js';
 import {ScrollView} from 'react-native-gesture-handler';
-
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 class EditPostScreen extends Component {
   constructor(props) {
@@ -15,12 +15,26 @@ class EditPostScreen extends Component {
       text: '',
       post_id: this.props.route.params.post_id,
       isLoading: true,
+      showAlert: false,
+      alertError: '',
     };
   }
 
   componentDidMount() {
     this.getPost();
   }
+
+  showAlert = () => {
+    this.setState({
+      showAlert: true,
+    });
+  };
+
+  hideAlert = () => {
+    this.setState({
+      showAlert: false,
+    });
+  };
 
   getPost = async () => {
     const jsonValue = await AsyncStorage.getItem('@spacebook_details');
@@ -62,10 +76,33 @@ class EditPostScreen extends Component {
         text: this.state.text,
       }),
     })
-        .then((response) => response.json())
-        .then((responseJson) => {
-          console.log(responseJson);
-          this.props.navigation.navigate('My Profile');
+        .then((response) => {
+          let text;
+          if (response.status == 200) {
+            this.props.navigation.navigate('My Profile');
+          } else {
+            switch (response.status) {
+              case 400:
+                text = 'The text you entered was invalid';
+                break;
+              case 401:
+                text = 'You are not logged in';
+                break;
+              case 403:
+                text = 'You can only update your own posts';
+                break;
+              case 404:
+                text = 'Post Not found';
+                break;
+              case 500:
+                text = 'A Server Error has occurred';
+                break;
+            }
+            this.setState({
+              alertError: text,
+            });
+            this.showAlert();
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -74,6 +111,7 @@ class EditPostScreen extends Component {
 
   render() {
     console.log('Edit Post');
+    const {showAlert} = this.state;
     if (this.state.isLoading) {
       return (
         <View>
@@ -100,7 +138,20 @@ class EditPostScreen extends Component {
               onPress={() => this.patchPost()}
             />
           </InnerStyledView>
-
+          <AwesomeAlert
+            show={showAlert}
+            showProgress={false}
+            title={this.state.alertError}
+            closeOnTouchOutside={true}
+            closeOnHardwareBackPress={false}
+            showCancelButton={false}
+            showConfirmButton={true}
+            confirmText="Ok"
+            confirmButtonColor="#DD6B55"
+            onConfirmPressed={() => {
+              this.hideAlert();
+            }}
+          />
         </ScrollView>
 
       );

@@ -1,6 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import {Text, View, Button, ActivityIndicator, FlatList, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 class FRScreen extends Component {
   constructor(props) {
@@ -9,12 +10,26 @@ class FRScreen extends Component {
     this.state = {
       isLoading: true,
       friendRequestData: [],
+      showAlert: false,
+      alertError: '',
     };
   }
 
   componentDidMount() {
     this.getFriendRequestsData();
   }
+
+  showAlert = () => {
+    this.setState({
+      showAlert: true,
+    });
+  };
+
+  hideAlert = () => {
+    this.setState({
+      showAlert: false,
+    });
+  };
 
   handleFR = async (friendId, methodType) => {
     const jsonValue = await AsyncStorage.getItem('@spacebook_details');
@@ -28,11 +43,32 @@ class FRScreen extends Component {
       },
     })
         .then((response) => {
-          if (methodType == 'POST') {
-            console.log('Friend Request Accepted');
-          } else if (methodType = 'DELETE') {
-            console.log('Friend Request Rejected');
+          let text;
+          switch (response.status) {
+            case 200:
+              if (methodType == 'POST') {
+                text = 'Friend Request Accepted';
+              } else if (methodType = 'DELETE') {
+                text = 'Friend Request Rejected';
+              }
+              break;
+            case 400:
+              text = 'User was not edited - Please check your inputs';
+              break;
+            case 401:
+              text = 'You are not logged in';
+              break;
+            case 403:
+              text = 'Forbidden Request';
+              break;
+            case 500:
+              text = 'A Server Error has occurred';
+              break;
           }
+          this.setState({
+            alertError: text,
+          });
+          this.showAlert();
         }).then(() => {
           this.getFriendRequestsData();
         })
@@ -66,6 +102,7 @@ class FRScreen extends Component {
 
   render() {
     console.log('Friend requests');
+    const {showAlert} = this.state;
     if (this.state.isLoading) {
       return (
         <View>
@@ -103,9 +140,21 @@ class FRScreen extends Component {
               keyExtractor={(item) => item.user_id}
             />
           </Fragment>
+          <AwesomeAlert
+            show={showAlert}
+            showProgress={false}
+            title={this.state.alertError}
+            closeOnTouchOutside={true}
+            closeOnHardwareBackPress={false}
+            showCancelButton={false}
+            showConfirmButton={true}
+            confirmText="Ok"
+            confirmButtonColor="#DD6B55"
+            onConfirmPressed={() => {
+              this.hideAlert();
+            }}
+          />
         </View>
-
-
       );
     }
   }
