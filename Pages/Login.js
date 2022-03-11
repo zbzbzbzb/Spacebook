@@ -27,8 +27,8 @@ class LoginScreen extends Component {
     }
 
     this.state = {
-      email: 'zfbobat@gmail.co.uk',
-      password: 'zahir123',
+      email: '',
+      password: '',
       showAlert: false,
       alertError: '',
     };
@@ -71,7 +71,7 @@ class LoginScreen extends Component {
             });
           } else {
             let text;
-            switch (json.status) {
+            switch (data.status) {
               case 400:
                 text = 'Email/Password Incorrect';
                 break;

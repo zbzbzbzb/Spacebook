@@ -4,7 +4,7 @@ import {View, Text, Button} from 'react-native';
 import {SplitViewBetween, AddMargin, InnerStyledView, SplitViewAround} from '../style.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const likePost = async (post_id, friend_id) => {
+const likePost = async (post_id, friend_id, showAlert, reload) => {
   const jsonValue = await AsyncStorage.getItem('@spacebook_details');
   const userData = JSON.parse(jsonValue);
 
@@ -17,14 +17,33 @@ const likePost = async (post_id, friend_id) => {
   })
       .then((response) => {
         console.log('Post Liked');
-        // Do something
+        let text;
+        switch (response.status) {
+          case 200:
+            text = 'You have liked this post';
+            break;
+          case 401:
+            text = 'You are not logged in';
+            break;
+          case 403:
+            text = 'You have already liked this post';
+            break;
+          case 404:
+            text = 'Post not found';
+            break;
+          case 500:
+            text = 'A Server Error has occurred';
+            break;
+        }
+        showAlert(text);
+        reload();
       })
       .catch((err) => {
         console.log(err);
       });
 };
 
-const unlikePost = async (post_id, friend_id) => {
+const unlikePost = async (post_id, friend_id, showAlert, reload) => {
   const jsonValue = await AsyncStorage.getItem('@spacebook_details');
   const userData = JSON.parse(jsonValue);
 
@@ -37,14 +56,33 @@ const unlikePost = async (post_id, friend_id) => {
   })
       .then((response) => {
         console.log('Post Unliked');
-        // Do something
+        let text;
+        switch (response.status) {
+          case 200:
+            text = 'You have unliked this post';
+            break;
+          case 401:
+            text = 'You are not logged in';
+            break;
+          case 403:
+            text = 'You have not liked this post ';
+            break;
+          case 404:
+            text = 'Post not found';
+            break;
+          case 500:
+            text = 'A Server Error has occurred';
+            break;
+        }
+        showAlert(text);
+        reload();
       })
       .catch((err) => {
         console.log(err);
       });
 };
 
-const deletePost = async (post_id, friend_id) => {
+const deletePost = async (post_id, friend_id, showAlert, reload) => {
   const jsonValue = await AsyncStorage.getItem('@spacebook_details');
   const userData = JSON.parse(jsonValue);
 
@@ -57,7 +95,26 @@ const deletePost = async (post_id, friend_id) => {
   })
       .then((response) => {
         console.log('Post Deleted');
-        // Do something
+        let text;
+        switch (response.status) {
+          case 200:
+            text = 'The post has been deleted';
+            break;
+          case 401:
+            text = 'You are not logged in';
+            break;
+          case 403:
+            text = 'You can only delete your own posts';
+            break;
+          case 404:
+            text = 'Post not found';
+            break;
+          case 500:
+            text = 'A Server Error has occurred';
+            break;
+        }
+        showAlert(text);
+        reload();
       })
       .catch((err) => {
         console.log(err);
@@ -71,7 +128,7 @@ const formatDate = (date) => {
   return dateString.toLocaleDateString('en-US', options);
 };
 
-const Post = ({post_id, text, timestamp, numLikes, friend_id, view, updel, update}) => {
+const Post = ({post_id, text, timestamp, numLikes, friend_id, view, updel, update, showAlert, reload}) => {
   const {updelButtons} = styles;
   let viewButton;
   if (view == undefined) {
@@ -92,13 +149,13 @@ const Post = ({post_id, text, timestamp, numLikes, friend_id, view, updel, updat
         <AddMargin>
           <Button
             title="Like"
-            onPress={() => likePost(post_id, friend_id)}
+            onPress={() => likePost(post_id, friend_id, showAlert, reload)}
           />
         </AddMargin>
         <AddMargin>
           <Button
             title="Unlike"
-            onPress={() => unlikePost(post_id, friend_id)}
+            onPress={() => unlikePost(post_id, friend_id, showAlert, reload)}
           />
         </AddMargin>
       </SplitViewAround>;
@@ -111,7 +168,7 @@ const Post = ({post_id, text, timestamp, numLikes, friend_id, view, updel, updat
     /></View>;
     deleteButton = <View style={updelButtons}><Button
       title="Delete"
-      onPress={() => deletePost(post_id, friend_id)}
+      onPress={() => deletePost(post_id, friend_id, showAlert, reload)}
       style={updelButtons}
     /></View>;
   }

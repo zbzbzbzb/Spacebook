@@ -99,7 +99,7 @@ class AddPostScreen extends Component {
           let text;
           switch (response.status) {
             case 201:
-              this.setState({text: ''});
+              this.setState({text: '', postToId: 0});
               text = 'Your Post as been created';
               break;
             case 401:
@@ -126,7 +126,6 @@ class AddPostScreen extends Component {
     console.log('AddPost');
     const {showAlert} = this.state;
     let postMyTimeline;
-    let friendsTimeline;
     if (this.state.isLoading) {
       return (
         <View>
@@ -140,9 +139,10 @@ class AddPostScreen extends Component {
       if (this.state.myId != 0) {
         postMyTimeline = <Picker.Item label="Post to my Timeline" value={this.state.myId} />;
       }
-      this.state.myFriends.forEach((element) => {//doesnt add to itself
-        friendsTimeline += <Picker.Item label={element.user_givenname} value={element.user_id} />;
-      });
+
+      const friendsTimeline = this.state.myFriends.map((element) =>
+        <Picker.Item label={element.user_givenname} value={element.user_id} key={element.user_id}/>,
+      );
       return (
         <InnerStyledView>
           <SpacebookInput

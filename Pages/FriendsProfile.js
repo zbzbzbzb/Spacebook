@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {InnerStyledView, SplitView, NameText, SubText, OneLineText} from '../style.js';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Post} from '../Components/Post.js';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 class FriendsProfile extends Component {
   constructor(props) {
@@ -15,6 +16,8 @@ class FriendsProfile extends Component {
       allPostsData: [],
       photo: null,
       friend_id: this.props.route.params.friend_id,
+      showAlert: false,
+      alertError: '',
     };
   }
 
@@ -23,6 +26,19 @@ class FriendsProfile extends Component {
     this.getPhotoData();
     this.getAllPosts();
   }
+
+  showAlert = (text) => {
+    this.setState({
+      alertError: text,
+      showAlert: true,
+    });
+  };
+
+  hideAlert = () => {
+    this.setState({
+      showAlert: false,
+    });
+  };
 
   getAllPosts = async () => {
     const jsonValue = await AsyncStorage.getItem('@spacebook_details');
@@ -112,6 +128,7 @@ class FriendsProfile extends Component {
       );
     } else {
       console.log(this.state.allPostsData);
+      const {showAlert} = this.state;
       return (
         <ScrollView>
           <InnerStyledView>
@@ -153,6 +170,8 @@ class FriendsProfile extends Component {
                     numLikes={item.numLikes}
                     friend_id={this.state.friend_id}
                     view={() => this.viewPost(item.post_id, this.state.friend_id)}
+                    showAlert={(text) => this.showAlert(text)}
+                    reload={() => this.getAllPosts()}
                   />
                 </TouchableOpacity>
               }
@@ -160,6 +179,20 @@ class FriendsProfile extends Component {
             />
 
           </Fragment>
+          <AwesomeAlert
+            show={showAlert}
+            showProgress={false}
+            title={this.state.alertError}
+            closeOnTouchOutside={true}
+            closeOnHardwareBackPress={false}
+            showCancelButton={false}
+            showConfirmButton={true}
+            confirmText="Ok"
+            confirmButtonColor="#DD6B55"
+            onConfirmPressed={() => {
+              this.hideAlert();
+            }}
+          />
         </ScrollView>
 
 

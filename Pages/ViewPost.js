@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {InnerStyledView, SubText} from '../style.js';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Post} from '../Components/Post.js';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 class ViewPost extends Component {
   constructor(props) {
@@ -14,12 +15,27 @@ class ViewPost extends Component {
       postData: [],
       post_id: this.props.route.params.post_id,
       friend_id: this.props.route.params.friend_id,
+      showAlert: false,
+      alertError: '',
     };
   }
 
   componentDidMount() {
     this.getPost();
   }
+
+  showAlert = (text) => {
+    this.setState({
+      alertError: text,
+      showAlert: true,
+    });
+  };
+
+  hideAlert = () => {
+    this.setState({
+      showAlert: false,
+    });
+  };
 
   getPost = async () => {
     const jsonValue = await AsyncStorage.getItem('@spacebook_details');
@@ -45,6 +61,7 @@ class ViewPost extends Component {
   };
 
   render() {
+    const {showAlert} = this.state;
     console.log('View Post');
     if (this.state.isLoading) {
       return (
@@ -67,6 +84,8 @@ class ViewPost extends Component {
               timestamp={this.state.postData.timestamp}
               numLikes={this.state.postData.numLikes}
               friend_id={this.state.friend_id}
+              showAlert={(text) => this.showAlert(text)}
+              reload={() => this.getPost()}
             />
 
             <InnerStyledView>
@@ -75,6 +94,21 @@ class ViewPost extends Component {
               </SubText>
             </InnerStyledView>
           </TouchableOpacity>
+
+          <AwesomeAlert
+            show={showAlert}
+            showProgress={false}
+            title={this.state.alertError}
+            closeOnTouchOutside={true}
+            closeOnHardwareBackPress={false}
+            showCancelButton={false}
+            showConfirmButton={true}
+            confirmText="Ok"
+            confirmButtonColor="#DD6B55"
+            onConfirmPressed={() => {
+              this.hideAlert();
+            }}
+          />
         </ScrollView>
 
 

@@ -27,8 +27,9 @@ class MyProfileScreen extends Component {
     await this.getAllPosts();
   }
 
-  showAlert = () => {
+  showAlert = (text) => {
     this.setState({
+      alertError: text,
       showAlert: true,
     });
   };
@@ -74,10 +75,7 @@ class MyProfileScreen extends Component {
               text = 'A Server Error has occurred';
               break;
           }
-          this.setState({
-            alertError: text,
-          });
-          this.showAlert();
+          this.showAlert(text);
         })
         .catch((error) => {
           console.log(error);
@@ -226,6 +224,8 @@ class MyProfileScreen extends Component {
                 view={() => this.viewPost(item.post_id, this.state.profileData.user_id)}
                 updel={true}
                 update={() => this.updatePost(item.post_id, this.state.profileData.user_id)}
+                showAlert={(text) => this.showAlert(text)}
+                reload={() => this.getAllPosts()}
               />
 
             }

@@ -1,13 +1,13 @@
 import React, {Component, Fragment} from 'react';
 import {Text, View, Button, FlatList} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import SelectDropdown from 'react-native-select-dropdown';
+import {Picker} from '@react-native-picker/picker';
 import {SpacebookInput} from '../Components/SpacebookInput.js';
 import {InnerStyledView, SplitViewBetween} from '../style.js';
 import {ScrollView} from 'react-native-gesture-handler';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
-const searchInDrop = ['Friends', 'All'];
+const searchInDrop = ['friends', 'all'];
 
 class SearchScreen extends Component {
   constructor(props) {
@@ -16,7 +16,7 @@ class SearchScreen extends Component {
     this.state = {
       searchData: [],
       q: '',
-      search_in: 'All',
+      search_in: 'all',
       limit: 20,
       offset: 0,
       showAlert: false,
@@ -129,6 +129,9 @@ class SearchScreen extends Component {
   render() {
     console.log('Search');
     const {showAlert} = this.state;
+    const selectOptions = searchInDrop.map((element) =>
+      <Picker.Item label={element} value={element} key={element}/>,
+    );
     return (
       <ScrollView>
         <InnerStyledView>
@@ -140,19 +143,14 @@ class SearchScreen extends Component {
           />
           <SplitViewBetween>
             <Text>Press to choose</Text>
-            <SelectDropdown
-              data={searchInDrop}
-              onSelect={(selectedItem, index) => {
-                console.log(selectedItem, index);
-              }}
-              buttonTextAfterSelection={(selectedItem, index) => {
-                this.setState({'search_in': selectedItem.toLowerCase()});
-                return selectedItem;
-              }}
-              rowTextForSelection={(item, index) => {
-                return item;
-              }}
-            />
+
+            <Picker
+              selectedValue={this.state.search_in}
+              onValueChange={(itemValue, itemIndex) =>
+                this.setState({'search_in': itemValue.toLowerCase()})
+              }>
+              {selectOptions}
+            </Picker>
           </SplitViewBetween>
           <Button
             title="Search"
