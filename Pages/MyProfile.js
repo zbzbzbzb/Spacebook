@@ -179,9 +179,9 @@ class MyProfileScreen extends Component {
       return (
 
 
-          <FlatList
-            ListHeaderComponent={
-              <InnerStyledView>
+        <FlatList
+          ListHeaderComponent={
+            <InnerStyledView>
               <SplitView>
                 <Image
                   source={{
@@ -213,27 +213,27 @@ class MyProfileScreen extends Component {
                 <Button onPress={this.logOut} title="Log Out" />
               </SplitViewBetween>
             </InnerStyledView>
-            }
-            data={this.state.allPostsData}
-            renderItem={({item}) =>
+          }
+          data={this.state.allPostsData}
+          renderItem={({ item }) =>
 
-              <Post
-                post_id={item.post_id}
-                text={item.text}
-                timestamp={item.timestamp}
-                numLikes={item.numLikes}
-                friend_id={this.state.profileData.user_id}
-                view={() => this.viewPost(item.post_id, this.state.profileData.user_id)}
-                updel={true}
-                update={() => this.updatePost(item.post_id, this.state.profileData.user_id)}
-                showAlert={(text) => this.showAlert(text)}
-                reload={() => this.getAllPosts()}
-              />
+            <Post
+              post_id={item.post_id}
+              text={item.text}
+              timestamp={item.timestamp}
+              numLikes={item.numLikes}
+              friend_id={this.state.profileData.user_id}
+              view={() => this.viewPost(item.post_id, this.state.profileData.user_id)}
+              updel={true}
+              update={() => this.updatePost(item.post_id, this.state.profileData.user_id)}
+              showAlert={(text) => this.showAlert(text)}
+              reload={() => this.getAllPosts()}
+            />
 
-            }
-            keyExtractor={(item) => item.post_id}
-            ListFooterComponent={
-              <AwesomeAlert
+          }
+          keyExtractor={(item) => item.post_id}
+          ListFooterComponent={
+            <AwesomeAlert
               show={showAlert}
               showProgress={false}
               title={this.state.alertError}
@@ -247,8 +247,8 @@ class MyProfileScreen extends Component {
                 this.hideAlert();
               }}
             />
-            }
-          />
+          }
+        />
 
 
       );
