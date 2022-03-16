@@ -122,7 +122,6 @@ class MyFriendsScreen extends Component {
       );
     } else {
       return (
-        <ScrollView>
           <FlatList
             data={this.state.myFriendsData}
             renderItem={({item}) =>
@@ -139,7 +138,7 @@ class MyFriendsScreen extends Component {
                         borderWidth: 2,
                       }}
                     />
-                    <View style={{paddingLeft: '7px'}}>
+                    <View>
                       <NameText>{item.user_givenname} {item.user_familyname}</NameText>
                     </View>
                   </SplitView>
@@ -153,23 +152,25 @@ class MyFriendsScreen extends Component {
               </TouchableOpacity>
             }
             keyExtractor={(item) => item.user_id}
+            ListFooterComponent={
+              <AwesomeAlert
+              show={showAlert}
+              showProgress={false}
+              title={this.state.alertError}
+              closeOnTouchOutside={true}
+              closeOnHardwareBackPress={false}
+              showCancelButton={false}
+              showConfirmButton={true}
+              confirmText="Ok"
+              confirmButtonColor="#DD6B55"
+              onConfirmPressed={() => {
+                this.hideAlert();
+              }}
+            />
+            }
           />
 
-          <AwesomeAlert
-            show={showAlert}
-            showProgress={false}
-            title={this.state.alertError}
-            closeOnTouchOutside={true}
-            closeOnHardwareBackPress={false}
-            showCancelButton={false}
-            showConfirmButton={true}
-            confirmText="Ok"
-            confirmButtonColor="#DD6B55"
-            onConfirmPressed={() => {
-              this.hideAlert();
-            }}
-          />
-        </ScrollView>
+
       );
     }
   }

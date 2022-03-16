@@ -130,36 +130,37 @@ class FriendsProfile extends Component {
       console.log(this.state.allPostsData);
       const {showAlert} = this.state;
       return (
-        <ScrollView>
-          <InnerStyledView>
-            <SplitView>
-              <Image
-                source={{
-                  uri: this.state.photo,
-                }}
-                style={{
-                  width: 100,
-                  height: 100,
-                  borderWidth: 2,
-                }}
-              />
-              <View style={{paddingLeft: '7px'}}>
-                <NameText>
-                  {this.state.profileData.first_name} {this.state.profileData.last_name}
-                </NameText>
-                <OneLineText>
-                  <SubText>My Email</SubText>
-                  <Text> {this.state.profileData.email}</Text>
-                </OneLineText>
-                <OneLineText>
-                  <SubText>Friends</SubText>
-                  <Text> {this.state.profileData.friend_count}</Text>
-                </OneLineText>
-              </View>
-            </SplitView>
-          </InnerStyledView>
-          <Fragment>
+
             <FlatList
+              ListHeaderComponent={
+                <InnerStyledView>
+                <SplitView>
+                  <Image
+                    source={{
+                      uri: this.state.photo,
+                    }}
+                    style={{
+                      width: 100,
+                      height: 100,
+                      borderWidth: 2,
+                    }}
+                  />
+                  <View>
+                    <NameText>
+                      {this.state.profileData.first_name} {this.state.profileData.last_name}
+                    </NameText>
+                    <OneLineText>
+                      <SubText>My Email</SubText>
+                      <Text> {this.state.profileData.email}</Text>
+                    </OneLineText>
+                    <OneLineText>
+                      <SubText>Friends</SubText>
+                      <Text> {this.state.profileData.friend_count}</Text>
+                    </OneLineText>
+                  </View>
+                </SplitView>
+              </InnerStyledView>
+              }
               data={this.state.allPostsData}
               renderItem={({item}) =>
                 <TouchableOpacity>
@@ -176,24 +177,24 @@ class FriendsProfile extends Component {
                 </TouchableOpacity>
               }
               keyExtractor={(item) => item.post_id}
+              ListFooterComponent={
+                <AwesomeAlert
+                show={showAlert}
+                showProgress={false}
+                title={this.state.alertError}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showCancelButton={false}
+                showConfirmButton={true}
+                confirmText="Ok"
+                confirmButtonColor="#DD6B55"
+                onConfirmPressed={() => {
+                  this.hideAlert();
+                }}
+              />
+              }
             />
 
-          </Fragment>
-          <AwesomeAlert
-            show={showAlert}
-            showProgress={false}
-            title={this.state.alertError}
-            closeOnTouchOutside={true}
-            closeOnHardwareBackPress={false}
-            showCancelButton={false}
-            showConfirmButton={true}
-            confirmText="Ok"
-            confirmButtonColor="#DD6B55"
-            onConfirmPressed={() => {
-              this.hideAlert();
-            }}
-          />
-        </ScrollView>
 
 
       );

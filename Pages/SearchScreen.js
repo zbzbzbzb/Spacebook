@@ -133,32 +133,33 @@ class SearchScreen extends Component {
       <Picker.Item label={element} value={element} key={element}/>,
     );
     return (
-      <ScrollView>
-        <InnerStyledView>
-          <SpacebookInput
-            autoCorrect={false}
-            label="Search for User"
-            changeText={(q) => this.setState({'q': q})}
-            inputvalue={this.state.q}
-          />
-          <SplitViewBetween>
-            <Text>Press to choose</Text>
 
-            <Picker
-              selectedValue={this.state.search_in}
-              onValueChange={(itemValue, itemIndex) =>
-                this.setState({'search_in': itemValue.toLowerCase()})
-              }>
-              {selectOptions}
-            </Picker>
-          </SplitViewBetween>
-          <Button
-            title="Search"
-            onPress={() => this.getSearchData()}
-          />
-        </InnerStyledView>
-        <Fragment>
           <FlatList
+            ListHeaderComponent={
+              <InnerStyledView>
+              <SpacebookInput
+                autoCorrect={false}
+                label="Search for User"
+                changeText={(q) => this.setState({'q': q})}
+                inputvalue={this.state.q}
+              />
+              <SplitViewBetween>
+                <Text>Press to choose</Text>
+    
+                <Picker
+                  selectedValue={this.state.search_in}
+                  onValueChange={(itemValue, itemIndex) =>
+                    this.setState({'search_in': itemValue.toLowerCase()})
+                  }>
+                  {selectOptions}
+                </Picker>
+              </SplitViewBetween>
+              <Button
+                title="Search"
+                onPress={() => this.getSearchData()}
+              />
+            </InnerStyledView>
+            }
             data={this.state.searchData}
             extraData={this.state}
             await renderItem={({item}) =>
@@ -173,23 +174,24 @@ class SearchScreen extends Component {
               </InnerStyledView>
             }
             keyExtractor={(item) => item.user_id}
+            ListFooterComponent={
+              <AwesomeAlert
+              show={showAlert}
+              showProgress={false}
+              title={this.state.alertError}
+              closeOnTouchOutside={true}
+              closeOnHardwareBackPress={false}
+              showCancelButton={false}
+              showConfirmButton={true}
+              confirmText="Ok"
+              confirmButtonColor="#DD6B55"
+              onConfirmPressed={() => {
+                this.hideAlert();
+              }}
+            />
+            }
           />
-        </Fragment>
-        <AwesomeAlert
-          show={showAlert}
-          showProgress={false}
-          title={this.state.alertError}
-          closeOnTouchOutside={true}
-          closeOnHardwareBackPress={false}
-          showCancelButton={false}
-          showConfirmButton={true}
-          confirmText="Ok"
-          confirmButtonColor="#DD6B55"
-          onConfirmPressed={() => {
-            this.hideAlert();
-          }}
-        />
-      </ScrollView>
+
 
     );
   }

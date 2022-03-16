@@ -114,8 +114,7 @@ class FRScreen extends Component {
       );
     } else {
       return (
-        <View>
-          <Fragment>
+
             <FlatList
               data={this.state.friendRequestData}
               renderItem={({item}) =>
@@ -138,23 +137,24 @@ class FRScreen extends Component {
                 </TouchableOpacity>
               }
               keyExtractor={(item) => item.user_id}
+              ListFooterComponent={
+                <AwesomeAlert
+                show={showAlert}
+                showProgress={false}
+                title={this.state.alertError}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showCancelButton={false}
+                showConfirmButton={true}
+                confirmText="Ok"
+                confirmButtonColor="#DD6B55"
+                onConfirmPressed={() => {
+                  this.hideAlert();
+                }}
+              />
+              }
             />
-          </Fragment>
-          <AwesomeAlert
-            show={showAlert}
-            showProgress={false}
-            title={this.state.alertError}
-            closeOnTouchOutside={true}
-            closeOnHardwareBackPress={false}
-            showCancelButton={false}
-            showConfirmButton={true}
-            confirmText="Ok"
-            confirmButtonColor="#DD6B55"
-            onConfirmPressed={() => {
-              this.hideAlert();
-            }}
-          />
-        </View>
+
       );
     }
   }

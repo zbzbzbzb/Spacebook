@@ -52,7 +52,7 @@ class HomeScreen extends Component {
             headerShown: false,
           }}
         >
-          <Tab.Screen name="Friends" component={FriendScreen} />
+          <Tab.Screen name="Friends Nav" component={FriendScreen} />
           <Tab.Screen name='Post' component={AddPostScreen} />
           <Tab.Screen name='Profile' component={ProfileScreen} />
         </Tab.Navigator>

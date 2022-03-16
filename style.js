@@ -10,7 +10,7 @@ export const InnerStyledView = styled.View`
 export const SplitView = styled.View`
     display:flex;
     flex-direction:row;
-    justify-content:left;
+    justify-content:flex-start;
     margin-bottom:5px;
 `;
 
@@ -31,7 +31,7 @@ export const SplitViewAround = styled.View`
 export const SplitViewRight = styled.View`
     display:flex;
     flex-direction:row;
-    justify-content:right;
+    justify-content:flex-end;
     margin-bottom:5px;
 `;
 

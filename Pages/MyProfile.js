@@ -177,41 +177,43 @@ class MyProfileScreen extends Component {
       );
     } else {
       return (
-        <ScrollView>
-          <InnerStyledView>
-            <SplitView>
-              <Image
-                source={{
-                  uri: this.state.photo,
-                }}
-                style={{
-                  width: 80,
-                  height: 80,
-                  borderWidth: 2,
-                }}
-              />
-              <View style={{paddingLeft: '7px'}}>
-                <NameText>
-                  {this.state.profileData.first_name} {this.state.profileData.last_name}
-                </NameText>
-                <OneLineText>
-                  <SubText>My Email</SubText>
-                  <Text> {this.state.profileData.email}</Text>
-                </OneLineText>
-                <OneLineText>
-                  <SubText>Friends</SubText>
-                  <Text> {this.state.profileData.friend_count}</Text>
-                </OneLineText>
-              </View>
-            </SplitView>
-            <SplitViewBetween>
-              <Button onPress={this.editProfile} title="Edit Profile" />
-              <Button onPress={this.editProfilePhoto} title="Edit Profile Photo" />
-              <Button onPress={this.logOut} title="Log Out" />
-            </SplitViewBetween>
-          </InnerStyledView>
+
 
           <FlatList
+            ListHeaderComponent={
+              <InnerStyledView>
+              <SplitView>
+                <Image
+                  source={{
+                    uri: this.state.photo,
+                  }}
+                  style={{
+                    width: 80,
+                    height: 80,
+                    borderWidth: 2,
+                  }}
+                />
+                <View>
+                  <NameText>
+                    {this.state.profileData.first_name} {this.state.profileData.last_name}
+                  </NameText>
+                  <OneLineText>
+                    <SubText>My Email</SubText>
+                    <Text> {this.state.profileData.email}</Text>
+                  </OneLineText>
+                  <OneLineText>
+                    <SubText>Friends</SubText>
+                    <Text> {this.state.profileData.friend_count}</Text>
+                  </OneLineText>
+                </View>
+              </SplitView>
+              <SplitViewBetween>
+                <Button onPress={this.editProfile} title="Edit Profile" />
+                <Button onPress={this.editProfilePhoto} title="Edit Profile Photo" />
+                <Button onPress={this.logOut} title="Log Out" />
+              </SplitViewBetween>
+            </InnerStyledView>
+            }
             data={this.state.allPostsData}
             renderItem={({item}) =>
 
@@ -230,23 +232,25 @@ class MyProfileScreen extends Component {
 
             }
             keyExtractor={(item) => item.post_id}
+            ListFooterComponent={
+              <AwesomeAlert
+              show={showAlert}
+              showProgress={false}
+              title={this.state.alertError}
+              closeOnTouchOutside={true}
+              closeOnHardwareBackPress={false}
+              showCancelButton={false}
+              showConfirmButton={true}
+              confirmText="Ok"
+              confirmButtonColor="#DD6B55"
+              onConfirmPressed={() => {
+                this.hideAlert();
+              }}
+            />
+            }
           />
 
-          <AwesomeAlert
-            show={showAlert}
-            showProgress={false}
-            title={this.state.alertError}
-            closeOnTouchOutside={true}
-            closeOnHardwareBackPress={false}
-            showCancelButton={false}
-            showConfirmButton={true}
-            confirmText="Ok"
-            confirmButtonColor="#DD6B55"
-            onConfirmPressed={() => {
-              this.hideAlert();
-            }}
-          />
-        </ScrollView>
+
       );
     }
   }
